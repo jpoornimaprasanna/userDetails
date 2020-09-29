@@ -19,7 +19,6 @@ sap.ui.define([
 					if (isNaN(oResult)) {
 						var oIntResult = parseInt(oResult);
 					}
-
 				}
 			});
 		}
