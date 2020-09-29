@@ -20,7 +20,7 @@ sap.ui.define([
 						var oIntResult = parseInt(oResult);
 					}
 				}
-			});
+			}); 
 		}
 	});
 });
