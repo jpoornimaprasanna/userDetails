@@ -75,6 +75,9 @@
 				},
 				"dataSource": "ZUSERDATA_SRV",
 				"preload": true
+			},
+			"userModel":{
+				"type": "sap.ui.model.json.JSONModel"
 			}
 		},
 		"resources": {
