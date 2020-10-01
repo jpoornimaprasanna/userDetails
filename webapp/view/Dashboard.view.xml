@@ -9,15 +9,12 @@
 							<uxap:headerTitle>
 								<uxap:ObjectPageDynamicHeaderTitle>
 									<uxap:expandedHeading>
-										<Title text="Total Number of Users" wrapping="true"/>
-										<Title text="{}" wrapping="true"/>
+										<Title text="Total Number of Users: {userModel>/totalUsers}" wrapping="true"/>
 									</uxap:expandedHeading>
 								</uxap:ObjectPageDynamicHeaderTitle>
 							</uxap:headerTitle>
 							<uxap:headerContent>
-								<FlexBox wrap="Wrap">
-								     
-								</FlexBox>
+								<FlexBox wrap="Wrap"></FlexBox>
 							</uxap:headerContent>
 							<uxap:sections>
 								<uxap:ObjectPageSection titleUppercase="false" id="GraphSection" title="Graph">
@@ -34,10 +31,52 @@
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
-									<uxap:ObjectPageSection titleUppercase="false" id="ActiveSection" title="Active User">
+								<uxap:ObjectPageSection titleUppercase="false" id="ActiveSection" title="Active User">
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="ActiveUserSection">
-											<Title text="Table"/>
+											<Table id="idProductsTable" inset="false" items="{ path: 'userModel>/activeUser', sorter: { path: 'Name' } }">
+												<headerToolbar>
+													<OverflowToolbar>
+														<!--<content>-->
+															<Input placeholder="User" value="{userModel>/username}" liveChange="onSearch" width="30%"  class="sapUiSizeCompact"/>
+														<!--</content>-->
+													</OverflowToolbar>
+												</headerToolbar>
+												<columns>
+													<Column width="12em">
+														<Text text="User name"/>
+													</Column>
+													<Column minScreenWidth="Tablet" demandPopin="true">
+														<Text text="Description"/>
+													</Column>
+													<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
+														<Text text="Last loggedin date"/>
+													</Column>
+													<Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">
+														<Text text="Status"/>
+													</Column>
+													<Column hAlign="End">
+														<Text text=""/>
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{userModel>Bname}"/>
+														</cells>
+														<cells></cells>
+														<cells>
+															<Text/>
+														</cells>
+														<cells>
+															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.dateFormatter'}"/>
+														</cells>
+															<cells>
+															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.activeUsers'}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
