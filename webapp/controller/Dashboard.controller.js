@@ -24,7 +24,8 @@ sap.ui.define([
 			this.getView().setModel(oModel);
 			var myModel = this.getView().getModel("userModel");
 			var lastName = myModel.getProperty("/lastname");
-			var PassCode = myModel.getProperty("/passCode");
+			var PassCodes = myModel.getProperty("/passCode");
+			var PassCode  = Number(PassCodes);
 			var CityNo = myModel.getProperty("/cityNo");
 			var City = myModel.getProperty("/city");
 			var Address = myModel.getProperty("/address");

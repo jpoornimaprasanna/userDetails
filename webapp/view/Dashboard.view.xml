@@ -38,11 +38,11 @@
 													<Label text="Password"/>
 													<Input value="{userModel>/password}"  required="true"/>
 													<Label text="Pass Code"/>
-													<Input value="{userModel>/passCode}"  />
+													<Input value="{userModel>/passCode}" required="true"/>
 													<Label text="City No."/>
 													<Input value="{userModel>/cityNo}"  />
 													<Label text="City"/>
-													<Input value="{userModel>/city}"  required="true"/>
+													<Input value="{userModel>/city}" />
 													<Label text="address"/>
 													<Input value="{userModel>/address}"  required="true"/>
 												</f:content>
