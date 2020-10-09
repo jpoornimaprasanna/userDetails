@@ -25,13 +25,13 @@ sap.ui.define([
 			var myModel = this.getView().getModel("userModel");
 			var lastName = myModel.getProperty("/lastname");
 			var PassCodes = myModel.getProperty("/passCode");
-			var PassCode  = Number(PassCodes);
+			var PassCode = Number(PassCodes);
 			var CityNo = myModel.getProperty("/cityNo");
 			var City = myModel.getProperty("/city");
 			var Address = myModel.getProperty("/address");
 			var password = myModel.getProperty("/password");
 			var user = myModel.getProperty("/user");
-			
+
 			var payload = {
 				"LASTNAME": lastName,
 				"PASScode": PassCode,
@@ -45,9 +45,23 @@ sap.ui.define([
 					success: function (oResult) {
 						console.log(oResult);
 						sap.m.MessageToast.show("Created Successfully");
+						myModel.setProperty("/lastname", "");
+						myModel.setProperty("/passCode", "");
+						myModel.setProperty("/cityNo", "");
+						myModel.setProperty("/city", "");
+						myModel.setProperty("/address", "");
+						myModel.setProperty("/password", "");
+						myModel.setProperty("/user", "");
 					},
 					error: function (oError) {
 						sap.m.MessageToast.show("Please try again with correct Credentials");
+						myModel.setProperty("/lastname", "");
+						myModel.setProperty("/passCode", "");
+						myModel.setProperty("/cityNo", "");
+						myModel.setProperty("/city", "");
+						myModel.setProperty("/address", "");
+						myModel.setProperty("/password", "");
+						myModel.setProperty("/user", "");
 					}
 
 				})
@@ -77,73 +91,25 @@ sap.ui.define([
 					debugger;
 
 					for (var i = 0; i < totalUsers; i++) {
-						var date = users[i].Trdat;
+						var str = users[i].Trdat;
+						if (str !== null) {
+							var date = new Date(Number(str.substr(6, 13)));
 
-						// if (date !== null && !isNaN(date)) {
-						// 	var dd = "";
-						// 	var mm = "";
-						// 	var yy = "";
-						// 	var a = new Date(Number(date));
-						// 	var hour = new Date(Number(date)).getUTCHours();
-						// 	var Minuts = new Date(1563616058514).getUTCMinutes();
-						// 	var seconds = new Date(1563616058514).getUTCSeconds();
-						// 	var newvlue = a.toLocaleDateString();
-						// 	dd = newvlue.split("/")[0];
-						// 	mm = newvlue.split("/")[1];
-						// 	yy = newvlue.split("/")[2];
-						// 	if (dd < 10) {
-						// 		dd = "0" + dd;
-						// 	}
-						// 	if (mm < 10) {
-						// 		mm = "0" + mm;
-						// 	}
+							var dateOffset = (24 * 60 * 60 * 1000) * 90;
+							var myDate = new Date();
+							myDate.setTime(myDate.getTime() - dateOffset);
 
-						// }
-						// var oDate = new Date();
-						// oDate.setDate(oDate.getDate());
-						// var sDate = dateFormat.format(oDate);
-						// var stringYear = sDate.substr(0, 4);
-						// var stringMonth = sDate.substr(5, 2);
-						// var stringDate = sDate.substr(7, 2);
-						// var currentyear = Number(stringYear);
-						// var currentmonth = Number(stringMonth);
-						// // var currentdate = Number(stringDate);
-						// var preYear = Number(yy);
-						// if (preYear < currentyear) {
-						// 	var diff = currentyear - yy;
-						// 	if (diff > 1) {
-						// 		active.push(users[i]);
-						// 		// return "inactive";
-						// 	} else if (diff === 0) {
-						// 		var months = currentmonth - mm;
-						// 		if (months <= 3) {
-						// 			active.push(users[i]);
-						// 			// return "active";
-						// 		} else {
-						// 			inactive.push(users[i]);
-						// 			// return {
-						// 			// 	inactive.push(users[i]);
-						// 			// 	"in active";
-						// 			// }
-						// 		}
-						// 	}
-						// }
-						// if (preYear === currentyear) {
-
-						var dateOffset = (24 * 60 * 60 * 1000) * 90;
-						var myDate = new Date();
-						myDate.setTime(myDate.getTime() - dateOffset);
-
-						var Activedate = new Date(myDate);
-						if (Activedate < date) {
-							active.push(users[i]);
-							// return "active";
+							var Activedate = new Date(myDate);
+							if (Activedate < date) {
+								active.push(users[i]);
+								// return "active";
+							} else {
+								inactive.push(users[i]);
+								// return "in active";
+							}
 						} else {
 							inactive.push(users[i]);
-							// return "in active";
 						}
-
-						// }
 
 					}
 					// var model = this.getView().getModel("userModel")
