@@ -1,93 +1,52 @@
 jQuery.sap.declare("ns.UserDetails.formatter.activeusers");
 ns.UserDetails.formatter.activeusers = {
 	dateFormatter: function (value) {
-		if (value !== null && !isNaN(value)) {
-			var dd = "";
-			var mm = "";
-			var yy = "";
-			var a = new Date(Number(value));
-			var hour = new Date(Number(value)).getUTCHours();
-			var Minuts = new Date(1563616058514).getUTCMinutes();
-			var seconds = new Date(1563616058514).getUTCSeconds();
-			var newvlue = a.toLocaleDateString();
-			dd = newvlue.split("/")[0];
-			mm = newvlue.split("/")[1];
-			yy = newvlue.split("/")[2];
+		if (value) {
+			var oLocDate = new Date(Number(value.substr(6, 13)));
+			var oMonthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var yyyy = oLocDate.getFullYear().toString();
+			var mmm = oMonthArr[oLocDate.getMonth()];
+			var dd = oLocDate.getDate();
 			if (dd < 10) {
-				dd = "0" + dd;
+				dd = "0" + dd.toString();
 			}
-			if (mm < 10) {
-				mm = "0" + mm;
+			var dateString = mmm + " " + dd + ", " + yyyy;
+			//var oTime = oValue.substring(11);
+			//var hh = oValue.split(":");
+			var hh = oLocDate.getHours();
+			var mm = oLocDate.getMinutes();
+			var ss = oLocDate.getSeconds();
+			var meridian = "AM";
+			if (hh >= 12) {
+				meridian = "PM";
+				if (hh > 12) {
+					hh = hh - 12;
+				}
 			}
-			return mm + "-" + dd + "-" + yy + "       " + " " + " " + hour + ":" + Minuts + ":" + seconds;
+			if (hh < 10) {
+				hh = "0" + hh;
+			}
+			var oTime = dateString;
+			// + " " + hh + ":" + mm + ":" + ss + " "
+			return oTime + " " + meridian;
 		}
+
 	},
 	activeUsers: function (value) {
-		var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
-			pattern: "yyyy-MM-dd"
-		});
-
-		if (value !== null && !isNaN(value)) {
-			var dd = "";
-			var mm = "";
-			var yy = "";
-			var a = new Date(Number(value));
-			var hour = new Date(Number(value)).getUTCHours();
-			var Minuts = new Date(1563616058514).getUTCMinutes();
-			var seconds = new Date(1563616058514).getUTCSeconds();
-			var newvlue = a.toLocaleDateString();
-			dd = newvlue.split("/")[0];
-			mm = newvlue.split("/")[1];
-			yy = newvlue.split("/")[2];
-			if (dd < 10) {
-				dd = "0" + dd;
-			}
-			if (mm < 10) {
-				mm = "0" + mm;
-			}
-
-		}
-
-		var oDate = new Date();
-		oDate.setDate(oDate.getDate());
-		var sDate = dateFormat.format(oDate);
-
-		// let last30days = new Date(now.setDate(now.getDate() - 30))
-
-		var stringYear = sDate.substr(0, 4);
-		var stringMonth = sDate.substr(5, 2);
-		var stringDate = sDate.substr(6, 2);
-		var currentyear = Number(stringYear);
-		var currentmonth = Number(stringMonth);
-		// var currentdate = Number(stringDate);
-		var preYear = Number(yy);
-		if (preYear < currentyear) {
-			var diff = currentyear - yy;
-			if (diff > 1) {
-
-				return "inactive";
-			} else if (diff === 0) {
-				var months = currentmonth - mm;
-				if (months <= 3) {
-					return "active";
-				} else return "in active";
-			}
-		}
-		if (preYear === currentyear) {
+		if (value) {
+			var oLocDate = new Date(Number(value.substr(6, 13)));
 
 			var dateOffset = (24 * 60 * 60 * 1000) * 90;
 			var myDate = new Date();
 			myDate.setTime(myDate.getTime() - dateOffset);
 
-			var date = new Date(myDate);
-			if (date < value) {
+			var threemonthsBackdate = new Date(myDate);
+			if (threemonthsBackdate < oLocDate) {
 				return "active";
 			} else {
 				return "in active";
 			}
-
 		}
-
 	}
 
 };
