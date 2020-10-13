@@ -5,11 +5,11 @@
 			<pages>
 				<Page id="page" title="{i18n>systemUsers}">
 					<content>
-						<uxap:ObjectPageLayout id="ObjectPageLayout" showTitleInHeaderContent="true" showEditHeaderButton="true">
+						<uxap:ObjectPageLayout id="ObjectPageLayout" showFooter="true" showTitleInHeaderContent="true" showEditHeaderButton="true">
 							<uxap:headerTitle>
 								<uxap:ObjectPageDynamicHeaderTitle>
 									<uxap:expandedHeading>
-										<Title text="Total Number of Users: {userModel>/totalUsers}" wrapping="true"/>
+										<Title text="Total Number of Users: {userModel>/totalusers}" wrapping="true"/>
 									</uxap:expandedHeading>
 								</uxap:ObjectPageDynamicHeaderTitle>
 							</uxap:headerTitle>
@@ -32,21 +32,21 @@
 												singleContainerFullSize="false">
 												<f:content>
 													<Label text="User Name"/>
-													<Input id="nameText" value="{userModel>/user}"  required="true"/>
-													<Label text="Last Name" />
-													<Input value="{userModel>/lastname}"  required="true"/>
+													<Input id="nameText" value="{userModel>/user}" required="true"/>
+													<Label text="Last Name"/>
+													<Input value="{userModel>/lastname}" required="true"/>
 													<Label text="Password"/>
-													<Input value="{userModel>/password}"  required="true"/>
+													<Input value="{userModel>/password}" required="true"/>
 													<Label text="Pass Code"/>
 													<Input value="{userModel>/passCode}" required="true"/>
 													<Label text="City No."/>
-													<Input value="{userModel>/cityNo}"  />
+													<Input value="{userModel>/cityNo}"/>
 													<Label text="City"/>
-													<Input value="{userModel>/city}" />
+													<Input value="{userModel>/city}"/>
 													<Label text="address"/>
-													<Input value="{userModel>/address}"  required="true"/>
+													<Input value="{userModel>/address}" required="true"/>
 												</f:content>
-												<Button text="Submit" press="onSubmit"/>
+												<!--<Button text="Submit" press="onSubmit"/>-->
 											</f:SimpleForm>
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
@@ -55,7 +55,7 @@
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="UsersSection">
 											<Table id="idProductsTable" growing="true" growingThreshold="10" inset="false"
-												items="{ path: 'userModel>/activeUser', sorter: { path: 'Name' } }">
+												items="{ path: 'userModel>/totalUserValues', sorter: { path: 'Name' } }">
 												<headerToolbar>
 													<OverflowToolbar>
 														<!--<content>-->
@@ -77,7 +77,7 @@
 														<Text text="Status"/>
 													</Column>
 													<Column hAlign="End">
-														<Text text=""/>
+														<Text text="Delete User"/>
 													</Column>
 												</columns>
 												<items>
@@ -94,6 +94,9 @@
 														</cells>
 														<cells>
 															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.activeUsers'}"/>
+														</cells>
+														<cells>
+															<Button text="{i18n>Delete}" press="onDelete"/>
 														</cells>
 													</ColumnListItem>
 												</items>
@@ -157,6 +160,13 @@
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
 							</uxap:sections>
+							<uxap:footer>
+								<OverflowToolbar>
+									<ToolbarSpacer/>
+									<Button type="Emphasized" text="Submit" press="onSubmit"/>
+									<Button type="Transparent" text="Cancel" press="onCancel"/>
+								</OverflowToolbar>
+							</uxap:footer>
 						</uxap:ObjectPageLayout>
 					</content>
 				</Page>
