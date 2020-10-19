@@ -3,8 +3,8 @@ ns.UserDetails.formatter.activeusers = {
 	dateFormatter: function (value) {
 		if (value) {
 
-			var oLocDate = new Date(Number(value.substr(6, 13)));
-			// var oLocDate = value;
+			// var oLocDate = new Date(Number(value.substr(6, 13)));
+			var oLocDate = value;
 			var oMonthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 			var yyyy = oLocDate.getFullYear().toString();
 			var mmm = oMonthArr[oLocDate.getMonth()];
@@ -37,8 +37,8 @@ ns.UserDetails.formatter.activeusers = {
 
 	activeUsers: function (value) {
 		if (value) {
-			var oLocDate = new Date(Number(value.substr(6, 13)));
-			// var oLocDate = value;
+			// var oLocDate = new Date(Number(value.substr(6, 13)));
+			var oLocDate = value;
 
 			var dateOffset = (24 * 60 * 60 * 1000) * 90;
 			var myDate = new Date();

@@ -106,8 +106,8 @@ sap.ui.define([
 						var str = users[i].Trdat;
 						totalUsersArray.push(users[i]);
 						if (str !== null) {
-							var date = new Date(Number(str.substr(6, 13)));
-							// var date = str;
+							// var date = new Date(Number(str.substr(6, 13)));
+							var date = str;
 							var dateOffset = (24 * 60 * 60 * 1000) * 90;
 							var myDate = new Date();
 							myDate.setTime(myDate.getTime() - dateOffset);
@@ -170,22 +170,7 @@ sap.ui.define([
 			arr.push(filters);
 			binding.filter(arr);
 		},
-		// onSearchInActive: function (oEvent) {
-		// 	var olist = this.getView().byId("idActiveTable"),
-		// 		// this.getView().getModel("userModel").getProperty("username");
-		// 		arr = [],
-		// 		binding,
-		// 		filters;
-		// 	filters = new Filter({
-		// 		filters: [new Filter("Bname", FilterOperator.Contains, oEvent.getSource().getValue())
-
-		// 		],
-		// 		and: false
-		// 	});
-		// 	binding = olist.getBinding("items");
-		// 	arr.push(filters);
-		// 	binding.filter(arr);
-		// },
+	
 		onSearchInActive: function (oEvent) {
 			var olist = this.getView().byId("idinActiveTable"),
 				// this.getView().getModel("userModel").getProperty("username");
