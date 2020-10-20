@@ -85,12 +85,24 @@
 												labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 												singleContainerFullSize="false">
 												<f:content>
+													<RadioButtonGroup id="rbg1" columns="2" selectedIndex="0" select="onRadioButtonSelect">
+														<RadioButton id="RB2-1" text="Create User"/>
+														<RadioButton id="RB2-2" text="Copy User"/>
+														<!--<RadioButton id="RB2-3" text="Option 3"/>-->
+													</RadioButtonGroup>
+														<!--<Label text="User Name"></Label>-->
+													<ComboBox placeholder="Select the User to Copy Data" items="{userModel>/totalUserValues}" visible="{userModel>/CopyUser}"  change="onComboSelectionChange" >
+														<core:Item key="{userModel>/Bname}" text="{userModel>Bname}"/>
+													</ComboBox>
+													<!--<ComboBox items="">-->
+													<!--	<core:Item key="" text=""/>-->
+													<!--</ComboBox>-->
 													<Label text="User Name"/>
 													<Input id="nameText" value="{userModel>/user}" required="true"/>
 													<Label text="Last Name"/>
 													<Input value="{userModel>/lastname}" required="true"/>
 													<Label text="Password"/>
-													<Input value="{userModel>/password}" required="true"/>
+													<Input value="{userModel>/password}" required="true" type="Password"/>
 													<Label text="Pass Code"/>
 													<Input value="{userModel>/passCode}" required="true"/>
 													<Label text="City No."/>
