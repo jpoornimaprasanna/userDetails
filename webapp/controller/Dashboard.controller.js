@@ -18,6 +18,7 @@ sap.ui.define([
 			this.getView().getModel("userModel").setProperty("/active", []);
 			this.getView().getModel("userModel").setProperty("/inactive", []);
 			this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+			this.getView().getModel("userModel").setProperty("/CopyUser", false);
 			// this.getView().getModel("userModel").setProperty("/totalusers", "");
 			var oModel = new JSONModel();
 			this.getView().setModel(oModel, "graph");
@@ -27,6 +28,19 @@ sap.ui.define([
 			var oModel = new JSONModel();
 			this.getView().setModel(oModel, "donut");
 			this.SearchGraph();
+		},
+		onRadioButtonSelect: function (oEvent) {
+
+			var selectedButton = oEvent.getSource().getSelectedButton().getText();
+			if (selectedButton === "Copy User") {
+				this.getView().getModel("userModel").setProperty("/CopyUser", true);
+			} else {
+				this.getView().getModel("userModel").setProperty("/CopyUser", false);
+			}
+		},
+
+		onComboSelectionChange: function () {
+
 		},
 
 		onCancel: function (oEvent) {
@@ -186,7 +200,7 @@ sap.ui.define([
 			arr.push(filters);
 			binding.filter(arr);
 		},
-	
+
 		onSearchInActive: function (oEvent) {
 			var olist = this.getView().byId("idinActiveTable"),
 				// this.getView().getModel("userModel").getProperty("username");
