@@ -66,6 +66,10 @@
 					"bundleName": "ns.UserDetails.i18n.i18n"
 				}
 			},
+				"myModel": {
+				"type": "sap.ui.model.json.JSONModel",
+				"uri": "myModel.json"
+			},
 			"": {
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
@@ -79,6 +83,7 @@
 			"userModel":{
 				"type": "sap.ui.model.json.JSONModel"
 			}
+		
 		},
 		"resources": {
 			"css": [
