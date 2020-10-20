@@ -1,5 +1,7 @@
 <mvc:View controllerName="ns.UserDetails.controller.Dashboard" xmlns:mvc="sap.ui.core.mvc" xmlns:uxap="sap.uxap" displayBlock="true"
-	xmlns="sap.m" height="100%" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+	xmlns="sap.m" height="100%" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:viz.data="sap.viz.ui5.data"
+	xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz="sap.viz.ui5.controls" xmlns:m="sap.suite.ui.microchart"
+	xmlns:core="sap.ui.core">
 	<Shell id="shell">
 		<App id="app">
 			<pages>
@@ -20,7 +22,59 @@
 								<uxap:ObjectPageSection titleUppercase="false" id="GraphSection" title="Graph">
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="goalsSection">
-											<Title text="Graph"/>
+											<VBox>
+												<ComboBox change="SearchGCombo" value="Daily" id="comboUser">
+													<core:Item text="Daily"/>
+													<core:Item text="Weekly"/>
+													<core:Item text="Userwise"/>
+												</ComboBox>
+												<!--<Title text="Graph"/>-->
+												<VBox visible="{graph>/daily}">
+													<HBox>
+														<!--<Input placeholder="User" change="SearchGraph" width="40%" class="sapUiSizeCompact"/>-->
+														<ComboBox items="{donut1>/users}" change="SearchGraph" value="HANAUSER2" id="combo">
+															<core:Item text="{donut1>Bname}"/>
+														</ComboBox>
+														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP1" valueFormat="MM/dd/yyyy" change="SearchGraph" value="10/13/2020"/></HBox>
+													<!--</VBox>-->
+													<!--<VBox>-->
+													<!--<FlexBox width="20rem" height="10rem" alignItems="left" justifyContent="SpaceBetween">-->
+													<!--	<items>-->
+													<m:InteractiveDonutChart selectionChanged="onSelectionChanged">
+														<m:segments>
+															<m:InteractiveDonutChartSegment label="Worked Hour" value="{donut>/a}" displayedValue="{donut>/c}"/>
+															<m:InteractiveDonutChartSegment label="Non Working Hour" value="{donut>/b}" displayedValue="{donut>/d}"/>
+															<!--<m:InteractiveDonutChartSegment label="Test Phase" value="38.5" displayedValue="38.5%"/>-->
+														</m:segments>
+													</m:InteractiveDonutChart>
+													<!--	</items>-->
+													<!--</FlexBox>-->
+												</VBox>
+												<VBox visible="{graph>/weekly}">
+													<HBox>
+														<ComboBox items="{donut1>/users}" change="Searchweek" value="HANAUSER2" id="combo1">
+															<core:Item text="{donut1>Bname}"/>
+														</ComboBox><DateRangeSelection id="DRS2" change="Searchweek"/></HBox>
+													<viz:VizFrame id="idVizFrame" vizType='column'>
+														<viz:dataset>
+															<viz.data:FlattenedDataset data="{myModel>/weekly}">
+																<viz.data:dimensions>
+																	<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
+																</viz.data:dimensions>
+																<viz.data:measures>
+																	<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
+																	<!--<viz.data:MeasureDefinition name="Cost"-->
+																	<!--    value="{Cost}" />-->
+																</viz.data:measures>
+															</viz.data:FlattenedDataset>
+														</viz:dataset>
+														<viz:feeds>
+															<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="work"/>
+															<viz.feeds:FeedItem id='categoryAxisFeed' uid="categoryAxis" type="Dimension" values="Hour"/>
+														</viz:feeds>
+													</viz:VizFrame>
+												</VBox>
+											</VBox>
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
