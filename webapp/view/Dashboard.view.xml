@@ -23,11 +23,13 @@
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="goalsSection">
 											<VBox>
-												<ComboBox change="SearchGCombo" value="Daily" id="comboUser">
-													<core:Item text="Daily"/>
-													<core:Item text="Weekly"/>
-													<core:Item text="Userwise"/>
-												</ComboBox>
+												<Toolbar><ToolbarSpacer/>
+													<ComboBox change="SearchGCombo" value="Daily" id="comboUser">
+														<core:Item text="Daily"/>
+														<core:Item text="Weekly"/>
+														<core:Item text="Userwise"/>
+													</ComboBox>
+												</Toolbar>
 												<!--<Title text="Graph"/>-->
 												<VBox visible="{graph>/daily}">
 													<HBox>
@@ -54,8 +56,10 @@
 													<HBox>
 														<ComboBox items="{donut1>/users}" change="Searchweek" value="HANAUSER2" id="combo1">
 															<core:Item text="{donut1>Bname}"/>
-														</ComboBox><DateRangeSelection id="DRS2" change="Searchweek"/></HBox>
-													<viz:VizFrame id="idVizFrame" vizType='column'>
+														</ComboBox>
+														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP2" valueFormat="MM/dd/yyyy" change="Searchweek" value="10/13/2020"/></HBox>
+													<!--<DateRangeSelection id="DRS2" change="Searchweek"/></HBox>-->
+													<viz:VizFrame id="idVizFrame" vizType='column' displayFormat="MM/dd/yyyy">
 														<viz:dataset>
 															<viz.data:FlattenedDataset data="{myModel>/weekly}">
 																<viz.data:dimensions>
@@ -71,6 +75,32 @@
 														<viz:feeds>
 															<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="work"/>
 															<viz.feeds:FeedItem id='categoryAxisFeed' uid="categoryAxis" type="Dimension" values="Hour"/>
+														</viz:feeds>
+													</viz:VizFrame>
+												</VBox>
+												<VBox visible="{graph>/user}">
+													<HBox>
+														<MultiComboBox selectionFinish="Searchweek" width="350px" items="{donut1>/users}" id="multicombo" selectedKeys="HANAUSER2">
+															<core:Item text="{donut1>Bname}" key="{donut1>Bname}"/>
+														</MultiComboBox>
+														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP3" width="350px" valueFormat="MM/dd/yyyy" change="Searchweek"
+															value="10/13/2020"/></HBox>
+													<viz:VizFrame id="idVizFrame1" vizType='column' displayFormat="MM/dd/yyyy">
+														<viz:dataset>
+															<viz.data:FlattenedDataset data="{myModel>/weekly}">
+																<viz.data:dimensions>
+																	<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
+																</viz.data:dimensions>
+																<viz.data:measures>
+																	<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
+																	<!--<viz.data:MeasureDefinition name="Cost"-->
+																	<!--    value="{Cost}" />-->
+																</viz.data:measures>
+															</viz.data:FlattenedDataset>
+														</viz:dataset>
+														<viz:feeds>
+															<viz.feeds:FeedItem id='valueAxisFeed1' uid="valueAxis" type="Measure" values="work"/>
+															<viz.feeds:FeedItem id='categoryAxisFeed1' uid="categoryAxis" type="Dimension" values="Hour"/>
 														</viz:feeds>
 													</viz:VizFrame>
 												</VBox>

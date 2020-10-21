@@ -260,11 +260,14 @@ sap.ui.define([
 				this.getView().getModel("graph").setProperty("/daily", false);
 				this.getView().getModel("graph").setProperty("/weekly", true);
 				this.getView().getModel("graph").setProperty("/user", false);
+				this.Searchweek("hi");
 			} else if (oEvent.getParameters().value === "Userwise") {
 				this.getView().getModel("graph").setProperty("/daily", false);
 				this.getView().getModel("graph").setProperty("/weekly", false);
 				this.getView().getModel("graph").setProperty("/user", true);
+				this.Searchweek("hi");
 			}
+
 		},
 		SearchGraph: function () {
 			// var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
@@ -415,21 +418,40 @@ sap.ui.define([
 			// var date = new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() + 1)
 			// 	.getMonth() + 1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 1);
 			oModel.setUseBatch(true);
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 1));
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 2));
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 3));
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 4));
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 5));
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 6));
+			debugger
+			if (this.getView().byId("comboUser").getValue() === "Weekly") {
+				// if (oEvent.getParameter("from").getMonth() === oEvent.getParameter("to").getMonth()) {
+				// var k = 1;
+				for (var i = 1; i <= 7; i++) {
+					this.GetData(new Date(this.getView().byId("DP2").getValue()).getFullYear() + "-" + Number(new Date(this.getView().byId("DP2").getValue())
+						.getMonth() + 1) + "-" + Number(new Date(this.getView().byId("DP2").getValue()).getDate() + i), this.getView().byId("combo1").getValue());
 
-			this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-				1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 7));
+				}
+				// } else if (oEvent.getParameter("from").getMonth() === oEvent.getParameter("to").getMonth()) {
+
+				// }
+			} else if (this.getView().byId("comboUser").getValue() === "Userwise") {
+				for (var i = 0; i < this.getView().byId("multicombo").getSelectedItems().length; i++) {
+					this.GetData(new Date(this.getView().byId("DP3").getValue()).getFullYear() + "-" + Number(new Date(this.getView().byId("DP3").getValue())
+						.getMonth() + 1) + "-" + Number(new Date(this.getView().byId("DP3").getValue()).getDate()), this.getView().byId("multicombo").getSelectedItems()[
+						i].getProperty("text"));
+				}
+			}
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 1));
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 2));
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 3));
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 4));
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 5));
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 6));
+
+			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
+			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 7));
 			var that = this;
 			oModel.submitChanges({
 				success: function (oData, oResponse) {
@@ -444,7 +466,7 @@ sap.ui.define([
 			}, 3000);
 
 		},
-		GetData: function (oEvent) {
+		GetData: function (oEvent, user) {
 			var a = new Filter({
 				path: "Auditdate",
 				operator: FilterOperator.EQ,
@@ -453,7 +475,7 @@ sap.ui.define([
 			var b = new Filter({
 				path: "Audituser",
 				operator: FilterOperator.EQ,
-				value1: this.getView().byId("combo1").getValue()
+				value1: user
 			});
 
 			var f = new Array();
@@ -462,7 +484,7 @@ sap.ui.define([
 			var mParameters = {
 				filters: f, // your Filter Array
 				success: function (oData, oResponse) {
-					this.getDate1(oData, oEvent);
+					this.getDate1(oData, oEvent, user);
 				}.bind(this),
 				error: function (oError) {
 
@@ -471,7 +493,7 @@ sap.ui.define([
 			var oModel10 = new sap.ui.model.odata.ODataModel("/sap/opu/odata/sap/ZUSERDATA_SRV");
 			oModel10.read("/GraphSet", mParameters);
 		},
-		getDate1: function (oData, oEvent) {
+		getDate1: function (oData, oEvent, user) {
 			var LoginTime = null,
 				a = [],
 				LogutTime = null;
@@ -516,10 +538,18 @@ sap.ui.define([
 			}
 			totalHour = totalHour + addhour;
 			totalMin = totalMin;
-			var a = {
-				"date": oEvent,
-				"count": totalHour + "." + totalMin
+			if (this.getView().byId("comboUser").getValue() === "Weekly") {
+				var a = {
+					"date": oEvent,
+					"count": totalHour + "." + totalMin
+				}
+			} else if (this.getView().byId("comboUser").getValue() === "Userwise") {
+				var a = {
+					"date": user,
+					"count": totalHour + "." + totalMin
+				}
 			}
+
 			this.week.push(a);
 			// debugger;
 
