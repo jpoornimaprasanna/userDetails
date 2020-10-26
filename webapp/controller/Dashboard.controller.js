@@ -19,6 +19,8 @@ sap.ui.define([
 			this.getView().getModel("userModel").setProperty("/inactive", []);
 			this.getView().getModel("userModel").setProperty("/totalUserValues", []);
 			this.getView().getModel("userModel").setProperty("/CopyUser", false);
+			this.getView().getModel("userModel").setProperty("/createUserVisible", true);
+			this.getView().getModel("userModel").setProperty("/copyUserVisible", false);
 			// this.getView().getModel("userModel").setProperty("/totalusers", "");
 			var oModel = new JSONModel();
 			this.getView().setModel(oModel, "graph");
@@ -30,16 +32,47 @@ sap.ui.define([
 			this.SearchGraph();
 		},
 		onRadioButtonSelect: function (oEvent) {
-
+			var oModel = this.getView().getModel("userModel");
 			var selectedButton = oEvent.getSource().getSelectedButton().getText();
 			if (selectedButton === "Copy User") {
-				this.getView().getModel("userModel").setProperty("/CopyUser", true);
+				oModel.setProperty("/CopyUser", true);
+				oModel.setProperty("/createUserVisible", false);
+				oModel.setProperty("/copyUserVisible", true);
 			} else {
-				this.getView().getModel("userModel").setProperty("/CopyUser", false);
+				this.getView().byId("IdComoBox").setValue("");
+				oModel.setProperty("/CopyUser", false);
+				oModel.setProperty("/createUserVisible", true);
+				oModel.setProperty("/copyUserVisible", false);
+
+				oModel.setProperty("/updateUsers/User", "");
+				oModel.setProperty("/updateUsers/LASTNAME", "");
+				oModel.setProperty("/updateUsers/password", "");
+				oModel.setProperty("/updateUsers/PASScode", "");
+				oModel.setProperty("/updateUsers/ADDR_NO", "");
+
 			}
 		},
 
-		onComboSelectionChange: function () {
+		onComboSelectionChange: function (oEvent) {
+			
+			var comboBoxVal = oEvent.getSource().getValue();
+			this.getView().getModel("userModel").setProperty("selectedComboValue", comboBoxVal);
+			var oModel = this.getOwnerComponent().getModel();
+			// oModel2.read("/EmployeeInfoSet('" + oArg + "')", {
+			oModel.read("/createUserSet('" + comboBoxVal + "')", {
+				success: function (oResult) {
+					this.getView().getModel("userModel").setProperty("/updateUsers", oResult);
+
+				}.bind(this),
+
+			});
+
+			// var sPath = oEvent.getSource().getSelectedItem().oBindingContexts.userModel.sPath;
+
+			// var form = this.getView().byId("SimpleFormDisplay354");
+			// var users = this.getView().getModel("userModel").getProperty(sPath);
+
+			// form.bindElement("userModel>" + sPath);
 
 		},
 
@@ -47,63 +80,113 @@ sap.ui.define([
 			var myModel = this.getView().getModel("userModel");
 			myModel.setProperty("/lastname", "");
 			myModel.setProperty("/passCode", "");
-			myModel.setProperty("/cityNo", "");
-			myModel.setProperty("/city", "");
+			// myModel.setProperty("/cityNo", "");
+			// myModel.setProperty("/city", "");
 			myModel.setProperty("/address", "");
 			myModel.setProperty("/password", "");
-			myModel.setProperty("/user", "");
+
+			myModel.setProperty("/updateUsers/User", "");
+			myModel.setProperty("/updateUsers/LASTNAME", "");
+			myModel.setProperty("/updateUsers/PASScode", "");
+			myModel.setProperty("/updateUsers/ADDR_NO", "");
+			myModel.setProperty("/updateUsers/password", "");
+
 		},
 
 		onSubmit: function (oEvent) {
+			
+
 			var myModel = this.getView().getModel("userModel");
 			var lastName = myModel.getProperty("/lastname");
 			var PassCodes = myModel.getProperty("/passCode");
 			var PassCode = Number(PassCodes);
-			var CityNo = myModel.getProperty("/cityNo");
-			var City = myModel.getProperty("/city");
 			var Address = myModel.getProperty("/address");
 			var password = myModel.getProperty("/password");
-			var user = myModel.getProperty("/user");
-			var values = this.getView().getModel("userModel").getProperty("/totalUserValues");
 
-			for (var i = 0; i < values.length; i++) {
-				if (values[i].Bname === user.toUpperCase()) {
-					sap.m.MessageToast.show(" User Already exists. Please Try with different User!!! ");
-					return false;
-				}
+			var copyUser = myModel.getProperty("/CopyUser");
+
+			var cLastName = myModel.getProperty("/updateUsers/LASTNAME");
+			var cPassCodes = myModel.getProperty("/updateUsers/PASScode");
+			var cPassCode = Number(cPassCodes);
+			var cAddress = myModel.getProperty("/updateUsers/ADDR_NO");
+			var cPassword = myModel.getProperty("/updateUsers/password");
+			// var selComboVal = this.getView().getModel("userModel").getProperty("selectedComboValue");
+			if (copyUser !== true && copyUser !== undefined) {
+				var user = myModel.getProperty("/Bname").toUpperCase();
+			} else if (copyUser !== undefined) {
+				var user = this.getView().byId("IdComoBox").getValue().toUpperCase();
 			}
 
+			if (copyUser === true) {
+				var payload = {
+					"LASTNAME": cLastName,
+					"PASScode": cPassCode,
+					"ADDR_NO": cAddress,
+					"password": cPassword,
+					"User": user
+				};
+			} else {
+				var payload = {
+					"LASTNAME": lastName,
+					"PASScode": PassCode,
+					"ADDR_NO": Address,
+					"password": password,
+					"User": user
+				};
+			}
+
+			var values = this.getView().getModel("userModel").getProperty("/totalUserValues");
+			if (copyUser !== true) {
+				for (var i = 0; i < values.length; i++) {
+					if (values[i].Bname === user) {
+						console.log(values[i].Bname);
+						sap.m.MessageToast.show(" User Already exists. Please Try with different User!!! ");
+						return false;
+					}
+				}
+			}
 			var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
 			var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
 			this.getView().setModel(oModel);
+			// "CITY_NO": CityNo,
+			// "CITY": City,
+			if (copyUser !== true) {
+				oModel.create("/createUserSet", payload, {
+					success: function (oResult) {
+						console.log(oResult);
+						sap.m.MessageToast.show("Created Successfully");
+						this.onCancel();
+						payload = {};
+						this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						this.getView().getModel("userModel").setProperty("/active", []);
+						this.getCount();
+						// this.oModel.refresh();
+						// this.table.refresh();
 
-			var payload = {
-				"LASTNAME": lastName,
-				"PASScode": PassCode,
-				"CITY_NO": CityNo,
-				"CITY": City,
-				"ADDR_NO": Address,
-				"password": password,
-				"User": user
-			};
-			oModel.create("/createUserSet", payload, {
-				success: function (oResult) {
-					console.log(oResult);
-					sap.m.MessageToast.show("Created Successfully");
-					this.onCancel();
-					payload = {};
-					this.getView().getModel("userModel").setProperty("/totalUserValues", []);
-					this.getView().getModel("userModel").setProperty("/active", []);
-					this.getCount();
-					// this.oModel.refresh();
-					// this.table.refresh();
+					}.bind(this),
+					error: function (oError) {
+						sap.m.MessageToast.show("Please try again with correct Credentials");
+						this.onCancel();
+					}.bind(this)
+				});
+			} else {
+				oModel.update("/createUserSet('" + user + "')", payload, {
+					success: function (oResult) {
+						sap.m.MessageToast.show("User Updated Successfully");
+						this.onCancel();
+						payload = {};
+						// this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						// this.getView().getModel("userModel").setProperty("/active", []);
+						// this.getCount();
+					}.bind(this),
+					error: function () {
+						sap.m.MessageToast.show("Please try again ");
+						this.onCancel();
+					}
 
-				}.bind(this),
-				error: function (oError) {
-					sap.m.MessageToast.show("Please try again with correct Credentials");
-					this.onCancel();
-				}.bind(this)
-			});
+				});
+
+			}
 		},
 
 		getCount: function () {
@@ -146,10 +229,10 @@ sap.ui.define([
 						} else {
 							inactive.push(users[i]);
 						}
-
 					}
-					// var model = this.getView().getModel("userModel")
 
+					// var model = this.getView().getModel("userModel")
+					this.getView().getModel("userModel").setSizeLimit(totalUsersArray.length);
 					this.getView().getModel("userModel").setProperty("/totalUserValues", totalUsersArray);
 					this.getView().getModel("userModel").setProperty("/inactive", inactive);
 					this.getView().getModel("userModel").setProperty("/active", active);
@@ -180,9 +263,8 @@ sap.ui.define([
 				],
 				and: false
 			});
-			binding = olist.getBinding("items");
-			arr.push(filters);
-			binding.filter(arr);
+			binding = olist.getBinding("rows");
+			binding.filter(filters);
 		},
 		onSearchActive: function (oEvent) {
 			var olist = this.getView().byId("idActiveTable"),
@@ -218,27 +300,60 @@ sap.ui.define([
 			binding.filter(arr);
 		},
 
+		// onRowSelect: function(oEvent){
+
+		// var rowContext =	oEvent.getParameter("rowContext");
+		// this.oRowSelectionContext.push(rowContext);
+		// console.log(this.oRowSelectionContext);
+		// },
 		onDelete: function (oEvent) {
+			
 			var table = this.getView().byId("idProductsTable");
-			var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
-			var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
-			this.getView().setModel(oModel);
-			var DeleteUserName = oEvent.getSource().getBindingContext('userModel').getObject().Bname;
+			var selectedIndexes = table.getSelectedIndices();
+			// 	var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
+			// var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
+			// this.getView().setModel(oModel);
 
-			oModel.remove("/createUserSet('" + DeleteUserName + "')", {
-				method: "DELETE",
-				success: function (data) {
-					this.getView().getModel("userModel").setProperty("/totalUserValues", []);
-					this.getCount();
-					// this.oModel.refresh();
+			var oModel = this.getOwnerComponent().getModel();
 
-					sap.m.MessageToast.show("User got deleted");
-					// this.getView().getModel().setData();
-					// this.table.refresh();
-				}.bind(this),
-				error: function (e) {
-					sap.m.MessageToast.show("Not able to delete the User ");
-				}.bind(this)
+			oModel.setUseBatch(true);
+			// var DeleteUserName = oEvent.getSource().getBindingContext('userModel').getObject().Bname;
+			// this.getView().getModel("userModel").setProperty("/", []);
+			for (let i = 0; i < selectedIndexes.length; i++) {
+
+				let sPath = table._getRowContexts()[table.getSelectedIndices()[i]].sPath;
+
+				let DeleteUserName = this.getView().getModel("userModel").getProperty(sPath).Bname.toUpperCase();
+
+				oModel.remove("/createUserSet('" + DeleteUserName + "')", {
+					method: "DELETE",
+					success: function (data) {
+						this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						this.getView().getModel("userModel").setProperty("/active", []);
+						this.getCount();
+						// this.oModel.refresh();
+						sap.m.MessageToast.show("User got deleted");
+						table.rerender();
+
+						// alert("oipi");
+						// this.getView().getModel().setData();
+						oModel.refresh();
+					}.bind(this),
+					error: function (e) {
+						sap.m.MessageToast.show("Not able to delete the User ");
+					}.bind(this)
+				});
+			}
+
+			oModel.submitChanges({
+				success: function (oData, oResponse) {
+					// sap.m.MessageToast.show("batch creation Done");
+					console.log("batch creation Done")
+				},
+				error: function (error, oResponse) {
+					sap.m.MessageToast.show("batch call failed");
+				}
+
 			});
 
 			// oModel.remove("/createUserSet", DeleteUserName, "DELETE" {
@@ -551,7 +666,7 @@ sap.ui.define([
 			}
 
 			this.week.push(a);
-			// debugger;
+			// 
 
 			// var noH = 23 - totalHour,
 			// 	noM = 60 - totalMin;
@@ -564,17 +679,68 @@ sap.ui.define([
 			// this.getView().getModel("donut").setProperty("/d", noH.toString() + ":" + noM.toString());
 
 		},
-		// getDate1: function (oData) {
-		// 	var LoginTime = null,
-		// 		a = [],
-		// 		LogutTime = null;
-		// 	for (var i = 0; i < oData.results.length; i++) {
-		// 		if (oData.results[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
-		// 			LoginTime = oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7));
-		// 		} else if (oData.results[i].Auditmessage.split(" ")[1] === "Logoff" && LoginTime !== null) {
-		// 			LogutTime = LoginTime.concat(oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7)));
-		// 			a.push(LogutTime);
-		// 			LoginTime = null;
+		onPressActive: function (oEvent) {
+			var oTable = this.getView().byId("idProductsTable"),
+				// oValue = this.getView().getModel("userModel").getProperty("/")
+				binding,
+				filters;
+			var loginDate = this.getView().getModel("userModel").getProperty("Trdat");
+			var dateOffset = (24 * 60 * 60 * 1000) * 90;
+			var myDate = new Date();
+			myDate.setTime(myDate.getTime() - dateOffset);
+			var threemonthsBackdate = new Date(myDate);
+
+			filters = new Filter({
+				filters: [new Filter("Trdat", FilterOperator.GT, threemonthsBackdate)
+
+				],
+				and: false
+			});
+			binding = oTable.getBinding("rows");
+			binding.filter(filters);
+			var activeCount = this.getView().getModel("userModel").getProperty("/active").length;
+
+			oEvent.getSource().setText(`Active (${activeCount})`);
+		},
+		onPressInActive: function (oEvent) {
+			var oTable = this.getView().byId("idProductsTable"),
+				// oValue = this.getView().getModel("userModel").getProperty("/")
+				binding,
+				filters;
+			var dateOffset = (24 * 60 * 60 * 1000) * 90;
+			var myDate = new Date();
+			myDate.setTime(myDate.getTime() - dateOffset);
+			var threemonthsBackdate = new Date(myDate);
+			filters = new Filter({
+				filters: [new Filter("Trdat", FilterOperator.LT, threemonthsBackdate)
+
+				],
+				and: false
+			});
+			binding = oTable.getBinding("rows");
+			binding.filter(filters);
+
+			var inActiveCount = this.getView().getModel("userModel").getProperty("/inactive").length;
+			oEvent.getSource().setText(`InActive (${inActiveCount})`);
+		},
+		onPressAll: function (oEvent) {
+				var oTable = this.getView().byId("idProductsTable");
+				// oValue = this.getView().getModel("userModel").getProperty("/")
+
+				let binding = oTable.getBinding("rows");
+				binding.filter(null);
+			}
+			// getDate1: function (oData) {
+			// 	var LoginTime = null,
+			// 		a = [],
+			// 		LogutTime = null;
+			// 	for (var i = 0; i < oData.results.length; i++) {
+			// 		if (oData.results[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
+			// 			LoginTime = oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7));
+			// 		} else if (oData.results[i].Auditmessage.split(" ")[1] === "Logoff" && LoginTime !== null) {
+			// 			LogutTime = LoginTime.concat(oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7)));
+			// 			a.push(LogutTime);
+			// 			LoginTime = null;
 
 		// 			LogutTime = null;
 		// 		}

@@ -1,7 +1,7 @@
 <mvc:View controllerName="ns.UserDetails.controller.Dashboard" xmlns:mvc="sap.ui.core.mvc" xmlns:uxap="sap.uxap" displayBlock="true"
 	xmlns="sap.m" height="100%" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:viz.data="sap.viz.ui5.data"
 	xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz="sap.viz.ui5.controls" xmlns:m="sap.suite.ui.microchart"
-	xmlns:core="sap.ui.core">
+	xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:u="sap.ui.unified">
 	<Shell id="shell">
 		<App id="app">
 			<pages>
@@ -42,13 +42,13 @@
 													<!--<VBox>-->
 													<!--<FlexBox width="20rem" height="10rem" alignItems="left" justifyContent="SpaceBetween">-->
 													<!--	<items>-->
-													<m:InteractiveDonutChart selectionChanged="onSelectionChanged">
-														<m:segments>
-															<m:InteractiveDonutChartSegment label="Worked Hour" value="{donut>/a}" displayedValue="{donut>/c}"/>
-															<m:InteractiveDonutChartSegment label="Non Working Hour" value="{donut>/b}" displayedValue="{donut>/d}"/>
-															<!--<m:InteractiveDonutChartSegment label="Test Phase" value="38.5" displayedValue="38.5%"/>-->
-														</m:segments>
-													</m:InteractiveDonutChart>
+													<!--<InteractiveDonutChart selectionChanged="onSelectionChanged">-->
+													<!--	<segments>-->
+													<!--		<InteractiveDonutChartSegment label="Worked Hour" value="{donut>/a}" displayedValue="{donut>/c}"/>-->
+													<!--		<InteractiveDonutChartSegment label="Non Working Hour" value="{donut>/b}" displayedValue="{donut>/d}"/>-->
+													<!--<InteractiveDonutChartSegment label="Test Phase" value="38.5" displayedValue="38.5%"/>-->
+													<!--	</segments>-->
+													<!--</InteractiveDonutChart>-->
 													<!--	</items>-->
 													<!--</FlexBox>-->
 												</VBox>
@@ -111,150 +111,186 @@
 								<uxap:ObjectPageSection titleUppercase="false" id="UserSection" title="Create User">
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="CreateUserSection">
-											<f:SimpleForm id="SimpleFormDisplay354" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
-												labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-												singleContainerFullSize="false">
-												<f:content>
-													<RadioButtonGroup id="rbg1" columns="2" selectedIndex="0" select="onRadioButtonSelect">
-														<RadioButton id="RB2-1" text="Create User"/>
-														<RadioButton id="RB2-2" text="Copy User"/>
-														<!--<RadioButton id="RB2-3" text="Option 3"/>-->
-													</RadioButtonGroup>
-														<!--<Label text="User Name"></Label>-->
-													<ComboBox placeholder="Select the User to Copy Data" items="{userModel>/totalUserValues}" visible="{userModel>/CopyUser}"  change="onComboSelectionChange" >
+											<HBox>
+												<RadioButtonGroup id="rbg1" columns="2" selectedIndex="0" select="onRadioButtonSelect">
+													<RadioButton id="RB2-1" text="Create User"/>
+													<RadioButton id="RB2-2" text="Copy User"/>
+													<!--<RadioButton id="RB2-3" text="Option 3"/>-->
+												</RadioButtonGroup>
+												<VBox fitContainer="true" alignContent="End" alignItems="Center">
+													<ComboBox id = "IdComoBox" placeholder="Select the User to Copy Data" items="{userModel>/totalUserValues}" visible="{userModel>/CopyUser}"
+														change="onComboSelectionChange">
 														<core:Item key="{userModel>/Bname}" text="{userModel>Bname}"/>
 													</ComboBox>
-													<!--<ComboBox items="">-->
-													<!--	<core:Item key="" text=""/>-->
-													<!--</ComboBox>-->
-													<Label text="User Name"/>
-													<Input id="nameText" value="{userModel>/user}" required="true"/>
-													<Label text="Last Name"/>
-													<Input value="{userModel>/lastname}" required="true"/>
-													<Label text="Password"/>
-													<Input value="{userModel>/password}" required="true" type="Password"/>
-													<Label text="Pass Code"/>
-													<Input value="{userModel>/passCode}" required="true"/>
-													<Label text="City No."/>
-													<Input value="{userModel>/cityNo}"/>
-													<Label text="City"/>
-													<Input value="{userModel>/city}"/>
-													<Label text="address"/>
-													<Input value="{userModel>/address}" required="true"/>
-												</f:content>
-												<!--<Button text="Submit" press="onSubmit"/>-->
-											</f:SimpleForm>
+													<f:SimpleForm id="SimpleFormDisplay354" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
+														labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+														singleContainerFullSize="false">
+														<f:content>
+															<VBox visible="{userModel>/createUserVisible}">
+																<Label text="User Name"/>
+																<Input value="{userModel>/Bname}" required="true"/>
+																<Label text="Last Name"/>
+																<Input value="{userModel>/lastname}" required="true"/>
+																<Label text="Password"/>
+																<Input value="{userModel>/password}" required="true" type="Password"/>
+																<Label text="Pass Code"/>
+																<Input value="{userModel>/passCode}" required="true"/>
+																<Label text="address Number"/>
+																<Input value="{userModel>/address}" required="true"/>
+															</VBox>
+															<VBox visible="{userModel>/copyUserVisible}">
+																<Label text="User Name"/>
+																<Input id="nameText" value="{userModel>/updateUsers/User}" required="true" enabled="false"/>
+																<Label text="Last Name"/>
+																<Input value="{userModel>/updateUsers/LASTNAME}" required="true"/>
+																<Label text="Password"/>
+																<Input value="{userModel>/updateUsers/password}" required="true" type="Password"/>
+																<Label text="Pass Code"/>
+																<Input value="{userModel>/updateUsers/PASScode}" required="true"/>
+																<!--<Label text="City No."/>-->
+																<!--<Input value="{userModel>/cityNo}"/>-->
+																<!--<Label text="City"/>-->
+																<!--<Input value="{userModel>/city}"/>-->
+																<Label text="address Number"/>
+																<Input value="{userModel>/updateUsers/ADDR_NO}" required="true"/>
+															</VBox>
+														</f:content>
+														<!--<Button text="Submit" press="onSubmit"/>-->
+													</f:SimpleForm>
+												</VBox>
+											</HBox>
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
 								<uxap:ObjectPageSection titleUppercase="false" id="usersSection" title="User Status">
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="UsersSection">
-											<Table id="idProductsTable" growing="true" growingThreshold="10" inset="false"
-												items="{ path: 'userModel>/totalUserValues', sorter: { path: 'Name' } }">
-												<headerToolbar>
+											<table:Table id="idProductsTable" visibleRowCount="7" rows="{ path: 'userModel>/totalUserValues'}" threshold="15" enableBusyIndicator="true"
+												ariaLabelledBy="title" rowSelectionChange="onRowSelect">
+												<!--<plugins>-->
+												<!--	<plugins:MultiSelectionPlugin limit="{path: 'config>/limit', type: 'sap.ui.model.type.Integer'}" enableNotification="true"-->
+												<!--		showHeaderSelector="{config>/showHeaderSelector}" selectionChange="onSelectionChange"/>-->
+												<!--</plugins>-->
+												<table:extension>
 													<OverflowToolbar>
-														<!--<content>-->
+														<Title id="title" text="Products"/>
+														<SegmentedButton selectedKey="SBYes">
+															<items>
+																<SegmentedButtonItem text="All" key="SBYes" press="onPressAll" icon="sap-icon://customer"/>
+																<SegmentedButtonItem text="Active" press="onPressActive" icon="sap-icon://activate"/>
+																<SegmentedButtonItem text="InActive" press="onPressInActive" icon="sap-icon://status-inactive"/>
+															</items>
+														</SegmentedButton>
+														<ToolbarSpacer/>
+														<!--<Label text="Selection Mode" labelFor="select1"/>-->
 														<Input placeholder="User" value="{userModel>/username}" liveChange="onSearch" width="30%" class="sapUiSizeCompact"/>
-														<!--</content>-->
+														<Button text="{i18n>Delete}" press="onDelete"/>
+														<!--<Select id="select1" width="20%" items="{config>/selectionModes}" selectedKey="MultiToggle" change="onSelectionModeChange">-->
+														<!--	<c:Item key="{config>key}" text="{config>text}"/>-->
+														<!--</Select>-->
+														<!--<Label text="Limit" labelFor="input1"/>-->
+														<!--<Input id="input1"  width="10%" tooltip="limit" />-->
+														<!--<ToolbarSeparator/>-->
+														<!--<ToggleButton icon="sap-icon://complete" tooltip="Show header selector" />-->
 													</OverflowToolbar>
-												</headerToolbar>
-												<columns>
-													<Column width="12em">
-														<Text text="User name"/>
-													</Column>
-													<Column minScreenWidth="Tablet" demandPopin="true">
-														<Text text="Description"/>
-													</Column>
-													<Column minScreenWidth="Desktop" demandPopin="true" hAlign="End">
-														<Text text="Last loggedin date"/>
-													</Column>
-													<Column minScreenWidth="Desktop" demandPopin="true" hAlign="Center">
-														<Text text="Status"/>
-													</Column>
-													<Column hAlign="End">
-														<Text text="Delete User"/>
-													</Column>
-												</columns>
-												<items>
-													<ColumnListItem>
-														<cells>
-															<Text text="{userModel>Bname}"/>
-														</cells>
-														<cells></cells>
-														<cells>
-															<Text/>
-														</cells>
-														<cells>
-															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.dateFormatter'}"/>
-														</cells>
-														<cells>
-															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.activeUsers'}"/>
-														</cells>
-														<cells>
-															<Button text="{i18n>Delete}" press="onDelete"/>
-														</cells>
-													</ColumnListItem>
-												</items>
-											</Table>
+												</table:extension>
+												<table:columns>
+													<!--<table:Column sortProperty="Name" filterProperty="Name" autoResizable="true" width="11rem">-->
+													<!--<Label text="{/#Product/Name/@sap:label}"/>-->
+													<!--	<table:template>-->
+													<!--		<Text text="{userModel>Bname}" wrapping="false"/>-->
+													<!--	</template>-->
+													<!--</table:Column>-->
+													<table:Column sortProperty="ProductID" filterProperty="ProductID" autoResizable="true" width="11rem">
+														<Label text="{i18n>username}"/>
+														<table:template>
+															<Text text="{userModel>Bname}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column autoResizable="true" width="11rem">
+														<Label text="{i18n>lastloggedindate}"/>
+														<table:template>
+															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.dateFormatter'}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<table:Column sortProperty="SupplierName" filterProperty="SupplierName" autoResizable="true" width="12rem">
+														<Label text="{i18n>status}"/>
+														<table:template>
+															<Text text="{path:'userModel>Trdat', formatter:'ns.UserDetails.formatter.activeusers.activeUsers'}" wrapping="false"/>
+														</table:template>
+													</table:Column>
+													<!--<table:Column filterProperty="Price" width="9rem">-->
+													<!--<Label text="{/#Product/Price/@sap:label}"/>-->
+													<!--	<table:template>-->
+													<!--		<u:Currency value="{ path: 'Price', type: 'sap.ui.model.type.String' }" currency="{CurrencyCode}"/>-->
+													<!--	</table:template>-->
+													<!--</table:Column>-->
+													<!--<table:Column hAlign="End" autoResizable="true" width="9rem">-->
+													<!--	<Label text="{/#Product/Width/@sap:label}"/>-->
+													<!--	<table:template>-->
+													<!--		<Text text="{Width}x{Height}x{Depth} {DimUnit}" wrapping="false"/>-->
+													<!--	</table:template>-->
+													<!--</table:Column>-->
+												</table:columns>
+											</table:Table>
 										</uxap:ObjectPageSubSection>
 									</uxap:subSections>
 								</uxap:ObjectPageSection>
-								<uxap:ObjectPageSection titleUppercase="false" id="activeusersSection" title="Active Users">
-									<uxap:subSections>
-										<uxap:ObjectPageSubSection id="ActiveUsersSection">
-											<Table id="idActiveTable" growing="true" growingThreshold="10" inset="false" items="{ path: 'userModel>/active', sorter: { path: 'Name' } }">
-												<headerToolbar>
-													<OverflowToolbar>
-														<content>
-															<Input placeholder="User" value="{userModel>/activeuser}" liveChange="onSearchActive" width="30%" class="sapUiSizeCompact"/>
-														</content>
-													</OverflowToolbar>
-												</headerToolbar>
-												<columns>
-													<Column width="12em">
-														<Text text="Active Users"/>
-													</Column>
-												</columns>
-												<items>
-													<ColumnListItem>
-														<cells>
-															<Text text="{userModel>Bname}"/>
-														</cells>
-													</ColumnListItem>
-												</items>
-											</Table>
-										</uxap:ObjectPageSubSection>
-									</uxap:subSections>
-								</uxap:ObjectPageSection>
-								<uxap:ObjectPageSection titleUppercase="false" id="inactiveusersSection" title="inactive Users">
-									<uxap:subSections>
-										<uxap:ObjectPageSubSection id="inActiveUsersSection">
-											<Table id="idinActiveTable" growing="true" growingThreshold="10" inset="false"
-												items="{ path: 'userModel>/inactive', sorter: { path: 'Name' } }">
-												<headerToolbar>
-													<OverflowToolbar>
-														<content>
-															<Input placeholder="User" value="{userModel>/inactiveuser}" liveChange="onSearchInActive" width="30%" class="sapUiSizeCompact"/>
-														</content>
-													</OverflowToolbar>
-												</headerToolbar>
-												<columns>
-													<Column width="12em">
-														<Text text="Active Users"/>
-													</Column>
-												</columns>
-												<items>
-													<ColumnListItem>
-														<cells>
-															<Text text="{userModel>Bname}"/>
-														</cells>
-													</ColumnListItem>
-												</items>
-											</Table>
-										</uxap:ObjectPageSubSection>
-									</uxap:subSections>
-								</uxap:ObjectPageSection>
+								<!--<uxap:ObjectPageSection titleUppercase="false" id="activeusersSection" title="Active Users">-->
+								<!--	<uxap:subSections>-->
+								<!--		<uxap:ObjectPageSubSection id="ActiveUsersSection">-->
+								<!--			<Table id="idActiveTable" growing="true" growingThreshold="10" inset="false" items="{ path: 'userModel>/active', sorter: { path: 'Name' } }">-->
+								<!--				<headerToolbar>-->
+								<!--					<OverflowToolbar>-->
+								<!--						<content>-->
+								<!--							<Input placeholder="User" value="{userModel>/activeuser}" liveChange="onSearchActive" width="30%" class="sapUiSizeCompact"/>-->
+								<!--						</content>-->
+								<!--					</OverflowToolbar>-->
+								<!--				</headerToolbar>-->
+								<!--				<columns>-->
+								<!--					<Column width="12em">-->
+								<!--						<Text text="Active Users"/>-->
+								<!--					</Column>-->
+								<!--				</columns>-->
+								<!--				<items>-->
+								<!--					<ColumnListItem>-->
+								<!--						<cells>-->
+								<!--							<Text text="{userModel>Bname}"/>-->
+								<!--						</cells>-->
+								<!--					</ColumnListItem>-->
+								<!--				</items>-->
+								<!--			</Table>-->
+								<!--		</uxap:ObjectPageSubSection>-->
+								<!--	</uxap:subSections>-->
+								<!--</uxap:ObjectPageSection>-->
+								<!--<uxap:ObjectPageSection titleUppercase="false" id="inactiveusersSection" title="inactive Users">-->
+								<!--	<uxap:subSections>-->
+								<!--		<uxap:ObjectPageSubSection id="inActiveUsersSection">-->
+								<!--			<Table id="idinActiveTable" growing="true" growingThreshold="10" inset="false"-->
+								<!--				items="{ path: 'userModel>/inactive', sorter: { path: 'Name' } }">-->
+								<!--				<headerToolbar>-->
+								<!--					<OverflowToolbar>-->
+								<!--						<content>-->
+								<!--							<Input placeholder="User" value="{userModel>/inactiveuser}" liveChange="onSearchInActive" width="30%" class="sapUiSizeCompact"/>-->
+								<!--						</content>-->
+								<!--					</OverflowToolbar>-->
+								<!--				</headerToolbar>-->
+								<!--				<columns>-->
+								<!--					<Column width="12em">-->
+								<!--						<Text text="Active Users"/>-->
+								<!--					</Column>-->
+								<!--				</columns>-->
+								<!--				<items>-->
+								<!--					<ColumnListItem>-->
+								<!--						<cells>-->
+								<!--							<Text text="{userModel>Bname}"/>-->
+								<!--						</cells>-->
+								<!--					</ColumnListItem>-->
+								<!--				</items>-->
+								<!--			</Table>-->
+								<!--		</uxap:ObjectPageSubSection>-->
+								<!--	</uxap:subSections>-->
+								<!--</uxap:ObjectPageSection>-->
 							</uxap:sections>
 							<uxap:footer>
 								<OverflowToolbar>
