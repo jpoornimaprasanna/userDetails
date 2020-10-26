@@ -700,7 +700,7 @@ sap.ui.define([
 
 				let binding = oTable.getBinding("rows");
 				binding.filter(null);
-			}
+			},
 			// getDate1: function (oData) {
 			// 	var LoginTime = null,
 			// 		a = [],

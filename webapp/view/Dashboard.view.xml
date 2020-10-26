@@ -1,11 +1,7 @@
 <mvc:View controllerName="ns.UserDetails.controller.Dashboard" xmlns:mvc="sap.ui.core.mvc" xmlns:uxap="sap.uxap" displayBlock="true"
 	xmlns="sap.m" height="100%" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:viz.data="sap.viz.ui5.data"
 	xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" xmlns:viz="sap.viz.ui5.controls" xmlns:m="sap.suite.ui.microchart"
-<<<<<<< HEAD
 	xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:u="sap.ui.unified">
-=======
-	xmlns:core="sap.ui.core" xmlns:r="sap.suite.ui.commons">
->>>>>>> refs/remotes/origin/rem_user
 	<Shell id="shell">
 		<App id="app">
 			<pages>
@@ -27,14 +23,11 @@
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="goalsSection">
 											<VBox>
-												<Toolbar><ToolbarSpacer/>
-													<ComboBox change="SearchGCombo" id="comboUser" value="{graph>/MainCombo}">
-														<core:Item text="Daily"/>
-														<core:Item text="Weekly"/>
-														<core:Item text="Userwise(daily)"/>
-														<core:Item text="Monthly"/>
-													</ComboBox>
-												</Toolbar>
+												<ComboBox change="SearchGCombo" value="Daily" id="comboUser">
+													<core:Item text="Daily"/>
+													<core:Item text="Weekly"/>
+													<core:Item text="Userwise"/>
+												</ComboBox>
 												<!--<Title text="Graph"/>-->
 												<VBox visible="{graph>/daily}">
 													<HBox>
@@ -42,13 +35,11 @@
 														<ComboBox items="{donut1>/users}" change="SearchGraph" value="HANAUSER2" id="combo">
 															<core:Item text="{donut1>Bname}"/>
 														</ComboBox>
-														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP1" valueFormat="MM/dd/yyyy" change="SearchGraph"
-															value="{graph>/dailydate}"/></HBox>
+														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP1" valueFormat="MM/dd/yyyy" change="SearchGraph" value="10/13/2020"/></HBox>
 													<!--</VBox>-->
 													<!--<VBox>-->
 													<!--<FlexBox width="20rem" height="10rem" alignItems="left" justifyContent="SpaceBetween">-->
 													<!--	<items>-->
-<<<<<<< HEAD
 													<!--<InteractiveDonutChart selectionChanged="onSelectionChanged">-->
 													<!--	<segments>-->
 													<!--		<InteractiveDonutChartSegment label="Worked Hour" value="{donut>/a}" displayedValue="{donut>/c}"/>-->
@@ -56,382 +47,32 @@
 													<!--<InteractiveDonutChartSegment label="Test Phase" value="38.5" displayedValue="38.5%"/>-->
 													<!--	</segments>-->
 													<!--</InteractiveDonutChart>-->
-=======
-													<!--<r:ChartContainer id="chartContainer" showFullScreen="true" showPersonalization="false" autoAdjustHeight="true"-->
-													<!--	personalizationPress="attachPersonalizationPress" contentChange="attachContentChange" title="Yearly Transaction">-->
-													<!--	<r:content>-->
-													<!--		<r:ChartContainerContent icon="sap-icon://line-chart" title="Line Chart">-->
-													<!--			<r:content>-->
-													<m:InteractiveDonutChart selectionChanged="onSelectionChanged">
-														<m:segments>
-															<m:InteractiveDonutChartSegment label="Worked Hour" value="{donut>/a}" displayedValue="{donut>/c}"/>
-															<m:InteractiveDonutChartSegment label="Non Working Hour" value="{donut>/b}" displayedValue="{donut>/d}"/>
-															<!--<m:InteractiveDonutChartSegment label="Test Phase" value="38.5" displayedValue="38.5%"/>-->
-														</m:segments>
-													</m:InteractiveDonutChart>
-													<!--			</r:content>-->
-													<!--		</r:ChartContainerContent>-->
-													<!--	</r:content>-->
-													<!--</r:ChartContainer>-->
->>>>>>> refs/remotes/origin/rem_user
 													<!--	</items>-->
 													<!--</FlexBox>-->
 												</VBox>
 												<VBox visible="{graph>/weekly}">
 													<HBox>
-														<ComboBox items="{donut1>/users}" change="Searchweek" value="{graph>/weekuser}" id="combo1">
+														<ComboBox items="{donut1>/users}" change="Searchweek" value="HANAUSER2" id="combo1">
 															<core:Item text="{donut1>Bname}"/>
-														</ComboBox>
-														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP2" valueFormat="MM/dd/yyyy" change="Searchweek"
-															value="{graph>/weekuserdate}"/></HBox>
-													<!--<DateRangeSelection id="DRS2" change="Searchweek"/></HBox>-->
-													<HBox>
-														<!--<r:ChartContainer id="chartContainer" showFullScreen="true" showPersonalization="false" autoAdjustHeight="true" width="800px"-->
-														<!--	personalizationPress="attachPersonalizationPress" contentChange="attachContentChange">-->
-														<!--	<r:content>-->
-														<!--		<r:ChartContainerContent icon="sap-icon://line-chart">-->
-														<!--			<r:content>-->
-														<viz:VizFrame id="idVizFrame" vizType='column' vizProperties="{title:{visible:false}}" width="800px" height="340px">
-															<viz:dataset>
-																<viz.data:FlattenedDataset data="{myModel>/weekly}">
-																	<viz.data:dimensions>
-																		<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
-																	</viz.data:dimensions>
-																	<viz.data:measures>
-																		<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
-																		<!--<viz.data:MeasureDefinition name="Cost"-->
-																		<!--    value="{Cost}" />-->
-																	</viz.data:measures>
-																</viz.data:FlattenedDataset>
-															</viz:dataset>
-															<viz:feeds>
-																<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="work"/>
-																<viz.feeds:FeedItem id='categoryAxisFeed' uid="categoryAxis" type="Dimension" values="Hour"/>
-															</viz:feeds>
-														</viz:VizFrame>
-														<!--			</r:content>-->
-														<!--		</r:ChartContainerContent>-->
-														<!--	</r:content>-->
-														<!--</r:ChartContainer>-->
-														<VBox class="table">
-															<Table items="{myModel>/weekly}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">
-																<columns>
-																	<Column>
-																		<Label text="Dates" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<Column >
-																		<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<Column >
-																		<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<Text text="{myModel>date}" class="sapUiSizeCompact"/>
-																			<Text text="{myModel>count}" class="sapUiSizeCompact"/>
-																			<Text text="8" class="sapUiSizeCompact"/>
-																			<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-														</VBox>
-													</HBox>
-												</VBox>
-												<VBox visible="{graph>/user}">
-													<HBox>
-														<MultiComboBox selectionFinish="Searchweek" items="{donut1>/users}" id="multicombo" selectedKeys="HANAUSER2">
-															<core:Item text="{donut1>Bname}" key="{donut1>Bname}"/>
-														</MultiComboBox>
-														<DatePicker displayFormat="MM/dd/yyyy" class="sapUiSizeCompact" id="DP3" valueFormat="MM/dd/yyyy" change="Searchweek" value="10/13/2020"/></HBox>
-													<HBox >
-														<viz:VizFrame id="idVizFrame1" vizType='column' vizProperties="{title:{visible:false}}" width="800px" height="340px">
-															<viz:dataset>
-																<viz.data:FlattenedDataset data="{myModel>/weekly}">
-																	<viz.data:dimensions>
-																		<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
-																	</viz.data:dimensions>
-																	<viz.data:measures>
-																		<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
-																		<!--<viz.data:MeasureDefinition name="Cost"-->
-																		<!--    value="{Cost}" />-->
-																	</viz.data:measures>
-																</viz.data:FlattenedDataset>
-															</viz:dataset>
-															<viz:feeds>
-																<viz.feeds:FeedItem id='valueAxisFeed1' uid="valueAxis" type="Measure" values="work"/>
-																<viz.feeds:FeedItem id='categoryAxisFeed1' uid="categoryAxis" type="Dimension" values="Hour"/>
-															</viz:feeds>
-														</viz:VizFrame>
-														<VBox >
-															<Table items="{myModel>/weekly}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">
-																<columns>
-																	<Column>
-																		<Label text="Users" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<Column >
-																		<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<Column width="20%">
-																		<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<Text text="{myModel>date}" class="sapUiSizeCompact"/>
-																			<Text text="{myModel>count}" class="sapUiSizeCompact"/>
-																			<Text text="8" class="sapUiSizeCompact"/>
-																			<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-															<!--<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">-->
-															<!--	<columns>-->
-															<!--<Column >-->
-															<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--		<Column width="20%">-->
-															<!--			<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--		</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--	</columns>-->
-															<!--	<items>-->
-															<!--		<ColumnListItem type="Navigation" class="sapUiSizeCompact">-->
-															<!--			<cells>-->
-															<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-															<!--				<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-															<!--			</cells>-->
-															<!--		</ColumnListItem>-->
-															<!--	</items>-->
-															<!--</Table>-->
-															<!--<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">-->
-															<!--	<columns>-->
-															<!--<Column >-->
-															<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--		<Column>-->
-															<!--			<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--		</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--	</columns>-->
-															<!--	<items>-->
-															<!--		<ColumnListItem type="Navigation" class="sapUiSizeCompact">-->
-															<!--			<cells>-->
-															<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-															<!--				<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-															<!--			</cells>-->
-															<!--		</ColumnListItem>-->
-															<!--	</items>-->
-															<!--</Table>-->
-															<!--<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">-->
-															<!--	<columns>-->
-															<!--<Column >-->
-															<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--<Column width="20%">-->
-															<!--	<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--</Column>-->
-															<!--		<Column>-->
-															<!--			<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-															<!--		</Column>-->
-															<!--	</columns>-->
-															<!--	<items>-->
-															<!--		<ColumnListItem type="Navigation" class="sapUiSizeCompact">-->
-															<!--			<cells>-->
-															<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-															<!--<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-															<!--				<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-															<!--			</cells>-->
-															<!--		</ColumnListItem>-->
-															<!--	</items>-->
-															<!--</Table>-->
-														</VBox>
-													</HBox>
-												</VBox>
-												<VBox visible="{graph>/userweek}">
-													<HBox>
-														<ComboBox change="Searchweek1" items="{donut1>/users}" id="multicombo1" value="{graph>/weeklyuser}">
-															<core:Item text="{donut1>Bname}" key="{donut1>Bname}"/>
-														</ComboBox>
-														<DatePicker displayFormat="MM/yyyy" class="sapUiSizeCompact" id="DP4" valueFormat="MM/yyyy" change="Searchweek1"
-															value="{graph>/weeklyuserdate}"/></HBox>
-													<HBox>
-														<!--<layout:Grid defaultSpan="L9 M9 S9" vSpacing="0" class="sapUiSizeCompact jbHboxClass">-->
-														<viz:VizFrame id="idVizFrame10" vizType='column' vizProperties="{title:{visible:false}}" width="900px" height="340px">
-															<viz:dataset>
-																<viz.data:FlattenedDataset data="{myModel>/monthly}">
-																	<viz.data:dimensions>
-																		<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
-																	</viz.data:dimensions>
-																	<viz.data:measures>
-																		<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
-																		<!--<viz.data:MeasureDefinition name="Cost"-->
-																		<!--    value="{Cost}" />-->
-																	</viz.data:measures>
-																</viz.data:FlattenedDataset>
-															</viz:dataset>
-															<viz:feeds>
-																<viz.feeds:FeedItem id='valueAxisFeed10' uid="valueAxis" type="Measure" values="work"/>
-																<viz.feeds:FeedItem id='categoryAxisFeed10' uid="categoryAxis" type="Dimension" values="Hour"/>
-															</viz:feeds>
-														</viz:VizFrame>
-														<!--</layout:Grid>-->
-														<!--<layout:Grid defaultSpan="L3 M3 S3" vSpacing="0" class="sapUiSizeCompact jbHboxClass">-->
-														<VBox >
-															<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">
-																<columns>
-																	<Column>
-																		<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<Text text="{myModel>user}" class="sapUiSizeCompact"/>
-																			<!--<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-															<Table id="idMarginList" items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact"
-																mode="SingleSelectMaster">
-																<columns>
-																	<!--<Column >-->
-																	<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<Column width="20%">
-																		<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-																			<Text text="{myModel>work}" class="sapUiSizeCompact"/>
-																			<!--<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-															<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">
-																<columns>
-																	<!--<Column >-->
-																	<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<Column>
-																		<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-																			<Text text="{myModel>total}" class="sapUiSizeCompact"/>
-																			<!--<Text text="{myModel>month}" class="sapUiSizeCompact"/>-->
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-															<Table items="{myModel>/monthlytable}" itemPress="fnTableSelectionChange" class="jbLabelClass sapUiSizeCompact" mode="SingleSelectMaster">
-																<columns>
-																	<!--<Column >-->
-																	<!--	<Label text="{i18n>NAME}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>worked_Hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<!--<Column width="20%">-->
-																	<!--	<Label text="{i18n>Total_hour}" design="Bold" class="sapUiSizeCompact"/>-->
-																	<!--</Column>-->
-																	<Column>
-																		<Label text="{i18n>Date}" design="Bold" class="sapUiSizeCompact"/>
-																	</Column>
-																</columns>
-																<items>
-																	<ColumnListItem type="Navigation" class="sapUiSizeCompact">
-																		<cells>
-																			<!--<Text text="{myModel>user}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>work}" class="sapUiSizeCompact"/>-->
-																			<!--<Text text="{myModel>total}" class="sapUiSizeCompact"/>-->
-																			<Text text="{myModel>month}" class="sapUiSizeCompact"/>
-																		</cells>
-																	</ColumnListItem>
-																</items>
-															</Table>
-														</VBox>
-														<!--</layout:Grid>-->
-													</HBox>
-													<!--<viz:VizFrame vizType='column' vizProperties="{title:{visible:false}}">-->
-													<!--	<viz:dataset>-->
-													<!--		<viz.data:FlattenedDataset data="{donut>/monthly}">-->
-													<!--			<viz.data:dimensions>-->
-													<!--				<viz.data:DimensionDefinition name="Hour" value="{donut>date}"/>-->
-													<!--			</viz.data:dimensions>-->
-													<!--			<viz.data:measures>-->
-													<!--				<viz.data:MeasureDefinition name="work" value="{donut>count}"/>-->
-													<!--<viz.data:MeasureDefinition name="Cost"-->
-													<!--    value="{Cost}" />-->
-													<!--			</viz.data:measures>-->
-													<!--		</viz.data:FlattenedDataset>-->
-													<!--	</viz:dataset>-->
-													<!--	<viz:feeds>-->
-													<!--		<viz.feeds:FeedItem uid="valueAxis" type="Measure" values="work"/>-->
-													<!--		<viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Hour"/>-->
-													<!--	</viz:feeds>-->
-													<!--</viz:VizFrame>-->
+														</ComboBox><DateRangeSelection id="DRS2" change="Searchweek"/></HBox>
+													<viz:VizFrame id="idVizFrame" vizType='column'>
+														<viz:dataset>
+															<viz.data:FlattenedDataset data="{myModel>/weekly}">
+																<viz.data:dimensions>
+																	<viz.data:DimensionDefinition name="Hour" value="{myModel>date}"/>
+																</viz.data:dimensions>
+																<viz.data:measures>
+																	<viz.data:MeasureDefinition name="work" value="{myModel>count}"/>
+																	<!--<viz.data:MeasureDefinition name="Cost"-->
+																	<!--    value="{Cost}" />-->
+																</viz.data:measures>
+															</viz.data:FlattenedDataset>
+														</viz:dataset>
+														<viz:feeds>
+															<viz.feeds:FeedItem id='valueAxisFeed' uid="valueAxis" type="Measure" values="work"/>
+															<viz.feeds:FeedItem id='categoryAxisFeed' uid="categoryAxis" type="Dimension" values="Hour"/>
+														</viz:feeds>
+													</viz:VizFrame>
 												</VBox>
 											</VBox>
 										</uxap:ObjectPageSubSection>
@@ -440,7 +81,6 @@
 								<uxap:ObjectPageSection titleUppercase="false" id="UserSection" title="Create User">
 									<uxap:subSections>
 										<uxap:ObjectPageSubSection id="CreateUserSection">
-<<<<<<< HEAD
 											<HBox>
 												<RadioButtonGroup id="rbg1" columns="2" selectedIndex="0" select="onRadioButtonSelect">
 													<RadioButton id="RB2-1" text="Create User"/>
@@ -449,19 +89,6 @@
 												</RadioButtonGroup>
 												<VBox fitContainer="true" alignContent="End" alignItems="Center">
 													<ComboBox id = "IdComoBox" placeholder="Select the User to Copy Data" items="{userModel>/totalUserValues}" visible="{userModel>/CopyUser}"
-=======
-											<f:SimpleForm id="SimpleFormDisplay354" editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
-												labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-												singleContainerFullSize="false">
-												<f:content>
-													<RadioButtonGroup id="rbg1" columns="2" selectedIndex="0" select="onRadioButtonSelect">
-														<RadioButton id="RB2-1" text="Create User"/>
-														<RadioButton id="RB2-2" text="Copy User"/>
-														<!--<RadioButton id="RB2-3" text="Option 3"/>-->
-													</RadioButtonGroup>
-													<!--<Label text="User Name"></Label>-->
-													<ComboBox placeholder="Select the User to Copy Data" items="{userModel>/totalUserValues}" visible="{userModel>/CopyUser}"
->>>>>>> refs/remotes/origin/rem_user
 														change="onComboSelectionChange">
 														<core:Item key="{userModel>/Bname}" text="{userModel>Bname}"/>
 													</ComboBox>
