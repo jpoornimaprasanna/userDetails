@@ -19,27 +19,69 @@ sap.ui.define([
 			this.getView().getModel("userModel").setProperty("/inactive", []);
 			this.getView().getModel("userModel").setProperty("/totalUserValues", []);
 			this.getView().getModel("userModel").setProperty("/CopyUser", false);
+			this.getView().getModel("userModel").setProperty("/createUserVisible", true);
+			this.getView().getModel("userModel").setProperty("/copyUserVisible", false);
 			// this.getView().getModel("userModel").setProperty("/totalusers", "");
 			var oModel = new JSONModel();
 			this.getView().setModel(oModel, "graph");
 			this.getView().getModel("graph").setProperty("/daily", true);
 			this.getView().getModel("graph").setProperty("/weekly", false);
 			this.getView().getModel("graph").setProperty("/user", false);
+			this.getView().getModel("graph").setProperty("/userweek", false);
+			this.getView().getModel("graph").setProperty("/dailydate", "10/13/2020");
+			this.getView().getModel("graph").setProperty("/MainCombo", "Daily");
+			this.getView().getModel("graph").setProperty("/weekuser", "HANAUSER2");
+			this.getView().getModel("graph").setProperty("/weekuserdate", "10/13/2020");
+			this.getView().getModel("graph").setProperty("/weeklyuser", "HANAUSER2");
+			this.getView().getModel("graph").setProperty("/weeklyuserdate", "10/2020");
+
 			var oModel = new JSONModel();
 			this.getView().setModel(oModel, "donut");
+			// this.getView().getModel("myModel").setProperty("/monthly", []);
 			this.SearchGraph();
 		},
 		onRadioButtonSelect: function (oEvent) {
-
+			var oModel = this.getView().getModel("userModel");
 			var selectedButton = oEvent.getSource().getSelectedButton().getText();
 			if (selectedButton === "Copy User") {
-				this.getView().getModel("userModel").setProperty("/CopyUser", true);
+				oModel.setProperty("/CopyUser", true);
+				oModel.setProperty("/createUserVisible", false);
+				oModel.setProperty("/copyUserVisible", true);
 			} else {
-				this.getView().getModel("userModel").setProperty("/CopyUser", false);
+				this.getView().byId("IdComoBox").setValue("");
+				oModel.setProperty("/CopyUser", false);
+				oModel.setProperty("/createUserVisible", true);
+				oModel.setProperty("/copyUserVisible", false);
+
+				oModel.setProperty("/updateUsers/User", "");
+				oModel.setProperty("/updateUsers/LASTNAME", "");
+				oModel.setProperty("/updateUsers/password", "");
+				oModel.setProperty("/updateUsers/PASScode", "");
+				oModel.setProperty("/updateUsers/ADDR_NO", "");
+
 			}
 		},
 
-		onComboSelectionChange: function () {
+		onComboSelectionChange: function (oEvent) {
+			
+			var comboBoxVal = oEvent.getSource().getValue();
+			this.getView().getModel("userModel").setProperty("selectedComboValue", comboBoxVal);
+			var oModel = this.getOwnerComponent().getModel();
+			// oModel2.read("/EmployeeInfoSet('" + oArg + "')", {
+			oModel.read("/createUserSet('" + comboBoxVal + "')", {
+				success: function (oResult) {
+					this.getView().getModel("userModel").setProperty("/updateUsers", oResult);
+
+				}.bind(this),
+
+			});
+
+			// var sPath = oEvent.getSource().getSelectedItem().oBindingContexts.userModel.sPath;
+
+			// var form = this.getView().byId("SimpleFormDisplay354");
+			// var users = this.getView().getModel("userModel").getProperty(sPath);
+
+			// form.bindElement("userModel>" + sPath);
 
 		},
 
@@ -47,63 +89,113 @@ sap.ui.define([
 			var myModel = this.getView().getModel("userModel");
 			myModel.setProperty("/lastname", "");
 			myModel.setProperty("/passCode", "");
-			myModel.setProperty("/cityNo", "");
-			myModel.setProperty("/city", "");
+			// myModel.setProperty("/cityNo", "");
+			// myModel.setProperty("/city", "");
 			myModel.setProperty("/address", "");
 			myModel.setProperty("/password", "");
-			myModel.setProperty("/user", "");
+
+			myModel.setProperty("/updateUsers/User", "");
+			myModel.setProperty("/updateUsers/LASTNAME", "");
+			myModel.setProperty("/updateUsers/PASScode", "");
+			myModel.setProperty("/updateUsers/ADDR_NO", "");
+			myModel.setProperty("/updateUsers/password", "");
+
 		},
 
 		onSubmit: function (oEvent) {
+			
+
 			var myModel = this.getView().getModel("userModel");
 			var lastName = myModel.getProperty("/lastname");
 			var PassCodes = myModel.getProperty("/passCode");
 			var PassCode = Number(PassCodes);
-			var CityNo = myModel.getProperty("/cityNo");
-			var City = myModel.getProperty("/city");
 			var Address = myModel.getProperty("/address");
 			var password = myModel.getProperty("/password");
-			var user = myModel.getProperty("/user");
-			var values = this.getView().getModel("userModel").getProperty("/totalUserValues");
 
-			for (var i = 0; i < values.length; i++) {
-				if (values[i].Bname === user.toUpperCase()) {
-					sap.m.MessageToast.show(" User Already exists. Please Try with different User!!! ");
-					return false;
-				}
+			var copyUser = myModel.getProperty("/CopyUser");
+
+			var cLastName = myModel.getProperty("/updateUsers/LASTNAME");
+			var cPassCodes = myModel.getProperty("/updateUsers/PASScode");
+			var cPassCode = Number(cPassCodes);
+			var cAddress = myModel.getProperty("/updateUsers/ADDR_NO");
+			var cPassword = myModel.getProperty("/updateUsers/password");
+			// var selComboVal = this.getView().getModel("userModel").getProperty("selectedComboValue");
+			if (copyUser !== true && copyUser !== undefined) {
+				var user = myModel.getProperty("/Bname").toUpperCase();
+			} else if (copyUser !== undefined) {
+				var user = this.getView().byId("IdComoBox").getValue().toUpperCase();
 			}
 
+			if (copyUser === true) {
+				var payload = {
+					"LASTNAME": cLastName,
+					"PASScode": cPassCode,
+					"ADDR_NO": cAddress,
+					"password": cPassword,
+					"User": user
+				};
+			} else {
+				var payload = {
+					"LASTNAME": lastName,
+					"PASScode": PassCode,
+					"ADDR_NO": Address,
+					"password": password,
+					"User": user
+				};
+			}
+
+			var values = this.getView().getModel("userModel").getProperty("/totalUserValues");
+			if (copyUser !== true) {
+				for (var i = 0; i < values.length; i++) {
+					if (values[i].Bname === user) {
+						console.log(values[i].Bname);
+						sap.m.MessageToast.show(" User Already exists. Please Try with different User!!! ");
+						return false;
+					}
+				}
+			}
 			var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
 			var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
 			this.getView().setModel(oModel);
+			// "CITY_NO": CityNo,
+			// "CITY": City,
+			if (copyUser !== true) {
+				oModel.create("/createUserSet", payload, {
+					success: function (oResult) {
+						console.log(oResult);
+						sap.m.MessageToast.show("Created Successfully");
+						this.onCancel();
+						payload = {};
+						this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						this.getView().getModel("userModel").setProperty("/active", []);
+						this.getCount();
+						// this.oModel.refresh();
+						// this.table.refresh();
 
-			var payload = {
-				"LASTNAME": lastName,
-				"PASScode": PassCode,
-				"CITY_NO": CityNo,
-				"CITY": City,
-				"ADDR_NO": Address,
-				"password": password,
-				"User": user
-			};
-			oModel.create("/createUserSet", payload, {
-				success: function (oResult) {
-					console.log(oResult);
-					sap.m.MessageToast.show("Created Successfully");
-					this.onCancel();
-					payload = {};
-					this.getView().getModel("userModel").setProperty("/totalUserValues", []);
-					this.getView().getModel("userModel").setProperty("/active", []);
-					this.getCount();
-					// this.oModel.refresh();
-					// this.table.refresh();
+					}.bind(this),
+					error: function (oError) {
+						sap.m.MessageToast.show("Please try again with correct Credentials");
+						this.onCancel();
+					}.bind(this)
+				});
+			} else {
+				oModel.update("/createUserSet('" + user + "')", payload, {
+					success: function (oResult) {
+						sap.m.MessageToast.show("User Updated Successfully");
+						this.onCancel();
+						payload = {};
+						// this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						// this.getView().getModel("userModel").setProperty("/active", []);
+						// this.getCount();
+					}.bind(this),
+					error: function () {
+						sap.m.MessageToast.show("Please try again ");
+						this.onCancel();
+					}
 
-				}.bind(this),
-				error: function (oError) {
-					sap.m.MessageToast.show("Please try again with correct Credentials");
-					this.onCancel();
-				}.bind(this)
-			});
+				});
+
+			}
 		},
 
 		getCount: function () {
@@ -146,10 +238,10 @@ sap.ui.define([
 						} else {
 							inactive.push(users[i]);
 						}
-
 					}
-					// var model = this.getView().getModel("userModel")
 
+					// var model = this.getView().getModel("userModel")
+					this.getView().getModel("userModel").setSizeLimit(totalUsersArray.length);
 					this.getView().getModel("userModel").setProperty("/totalUserValues", totalUsersArray);
 					this.getView().getModel("userModel").setProperty("/inactive", inactive);
 					this.getView().getModel("userModel").setProperty("/active", active);
@@ -180,9 +272,8 @@ sap.ui.define([
 				],
 				and: false
 			});
-			binding = olist.getBinding("items");
-			arr.push(filters);
-			binding.filter(arr);
+			binding = olist.getBinding("rows");
+			binding.filter(filters);
 		},
 		onSearchActive: function (oEvent) {
 			var olist = this.getView().byId("idActiveTable"),
@@ -218,27 +309,60 @@ sap.ui.define([
 			binding.filter(arr);
 		},
 
+		// onRowSelect: function(oEvent){
+
+		// var rowContext =	oEvent.getParameter("rowContext");
+		// this.oRowSelectionContext.push(rowContext);
+		// console.log(this.oRowSelectionContext);
+		// },
 		onDelete: function (oEvent) {
+			
 			var table = this.getView().byId("idProductsTable");
-			var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
-			var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
-			this.getView().setModel(oModel);
-			var DeleteUserName = oEvent.getSource().getBindingContext('userModel').getObject().Bname;
+			var selectedIndexes = table.getSelectedIndices();
+			// 	var ODataModel = "/sap/opu/odata/sap/ZUSERDATA_SRV";
+			// var oModel = new sap.ui.model.odata.ODataModel(ODataModel, true);
+			// this.getView().setModel(oModel);
 
-			oModel.remove("/createUserSet('" + DeleteUserName + "')", {
-				method: "DELETE",
-				success: function (data) {
-					this.getView().getModel("userModel").setProperty("/totalUserValues", []);
-					this.getCount();
-					// this.oModel.refresh();
+			var oModel = this.getOwnerComponent().getModel();
 
-					sap.m.MessageToast.show("User got deleted");
-					// this.getView().getModel().setData();
-					// this.table.refresh();
-				}.bind(this),
-				error: function (e) {
-					sap.m.MessageToast.show("Not able to delete the User ");
-				}.bind(this)
+			oModel.setUseBatch(true);
+			// var DeleteUserName = oEvent.getSource().getBindingContext('userModel').getObject().Bname;
+			// this.getView().getModel("userModel").setProperty("/", []);
+			for (let i = 0; i < selectedIndexes.length; i++) {
+
+				let sPath = table._getRowContexts()[table.getSelectedIndices()[i]].sPath;
+
+				let DeleteUserName = this.getView().getModel("userModel").getProperty(sPath).Bname.toUpperCase();
+
+				oModel.remove("/createUserSet('" + DeleteUserName + "')", {
+					method: "DELETE",
+					success: function (data) {
+						this.getView().getModel("userModel").setProperty("/totalUserValues", []);
+						this.getView().getModel("userModel").setProperty("/active", []);
+						this.getCount();
+						// this.oModel.refresh();
+						sap.m.MessageToast.show("User got deleted");
+						table.rerender();
+
+						// alert("oipi");
+						// this.getView().getModel().setData();
+						oModel.refresh();
+					}.bind(this),
+					error: function (e) {
+						sap.m.MessageToast.show("Not able to delete the User ");
+					}.bind(this)
+				});
+			}
+
+			oModel.submitChanges({
+				success: function (oData, oResponse) {
+					// sap.m.MessageToast.show("batch creation Done");
+					console.log("batch creation Done")
+				},
+				error: function (error, oResponse) {
+					sap.m.MessageToast.show("batch call failed");
+				}
+
 			});
 
 			// oModel.remove("/createUserSet", DeleteUserName, "DELETE" {
@@ -256,16 +380,25 @@ sap.ui.define([
 				this.getView().getModel("graph").setProperty("/daily", true);
 				this.getView().getModel("graph").setProperty("/weekly", false);
 				this.getView().getModel("graph").setProperty("/user", false);
+				this.getView().getModel("graph").setProperty("/userweek", false);
 			} else if (oEvent.getParameters().value === "Weekly") {
 				this.getView().getModel("graph").setProperty("/daily", false);
 				this.getView().getModel("graph").setProperty("/weekly", true);
 				this.getView().getModel("graph").setProperty("/user", false);
+				this.getView().getModel("graph").setProperty("/userweek", false);
 				this.Searchweek("hi");
-			} else if (oEvent.getParameters().value === "Userwise") {
+			} else if (oEvent.getParameters().value === "Userwise(daily)") {
 				this.getView().getModel("graph").setProperty("/daily", false);
 				this.getView().getModel("graph").setProperty("/weekly", false);
 				this.getView().getModel("graph").setProperty("/user", true);
+				this.getView().getModel("graph").setProperty("/userweek", false);
 				this.Searchweek("hi");
+			} else if (oEvent.getParameters().value === "Monthly") {
+				this.getView().getModel("graph").setProperty("/daily", false);
+				this.getView().getModel("graph").setProperty("/weekly", false);
+				this.getView().getModel("graph").setProperty("/user", false);
+				this.getView().getModel("graph").setProperty("/userweek", true);
+				this.Searchweek1("hi");
 			}
 
 		},
@@ -412,46 +545,51 @@ sap.ui.define([
 
 		},
 		Searchweek: function (oEvent) {
-			let oModel = this.getOwnerComponent().getModel();
+			var oModel = new sap.ui.model.odata.ODataModel("/sap/opu/odata/sap/ZUSERDATA_SRV");
 
 			this.week = [];
 			// var date = new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() + 1)
 			// 	.getMonth() + 1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 1);
 			oModel.setUseBatch(true);
 			debugger
-			if (this.getView().byId("comboUser").getValue() === "Weekly") {
-				// if (oEvent.getParameter("from").getMonth() === oEvent.getParameter("to").getMonth()) {
-				// var k = 1;
-				for (var i = 1; i <= 7; i++) {
-					this.GetData(new Date(this.getView().byId("DP2").getValue()).getFullYear() + "-" + Number(new Date(this.getView().byId("DP2").getValue())
-						.getMonth() + 1) + "-" + Number(new Date(this.getView().byId("DP2").getValue()).getDate() + i), this.getView().byId("combo1").getValue());
+			if (this.getView().getModel("graph").getProperty("/MainCombo") === "Weekly") {
 
+				var k = 7,
+					year = new Date(this.getView().getModel("graph").getProperty("/weekuserdate")).getFullYear(),
+					month = new Date(this.getView().getModel("graph").getProperty("/weekuserdate")).getMonth() + 1,
+					date = new Date(this.getView().getModel("graph").getProperty("/weekuserdate")).getDate() + 1,
+					endDate = this.getDaysInMonth(month, year);
+
+				for (var i = 0; i < k;) {
+					if (date > 31 && month == 12) {
+						year++;
+						month = 1;
+						date = 1;
+					} else {
+						if (date <= endDate) {
+							this.GetData(year + "-" + month + "-" + Number(date), this.getView().byId("combo1").getValue());
+							i++;
+							date++;
+						} else {
+							month = month + 1;
+							date = 1;
+						}
+					}
 				}
 				// } else if (oEvent.getParameter("from").getMonth() === oEvent.getParameter("to").getMonth()) {
 
 				// }
-			} else if (this.getView().byId("comboUser").getValue() === "Userwise") {
+			} else if (this.getView().getModel("graph").getProperty("/MainCombo") === "Userwise(daily)") {
 				for (var i = 0; i < this.getView().byId("multicombo").getSelectedItems().length; i++) {
 					this.GetData(new Date(this.getView().byId("DP3").getValue()).getFullYear() + "-" + Number(new Date(this.getView().byId("DP3").getValue())
-						.getMonth() + 1) + "-" + Number(new Date(this.getView().byId("DP3").getValue()).getDate()), this.getView().byId("multicombo").getSelectedItems()[
+						.getMonth() + 1) + "-" + Number(new Date(this.getView().byId("DP3").getValue()).getDate() + 1), this.getView().byId(
+						"multicombo").getSelectedItems()[
 						i].getProperty("text"));
 				}
-			}
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 1));
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 2));
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 3));
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 4));
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 5));
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 6));
+			} else if (this.getView().getModel("graph").getProperty("/MainCombo") === "Monthly") {
 
-			// this.GetData(new Date(oEvent.getParameter("from")).getFullYear() + "-" + Number(new Date(oEvent.getParameter("from")).getMonth() +
-			// 	1) + "-" + Number(new Date(oEvent.getParameter("from")).getDate() + 7));
+			}
+
 			var that = this;
 			oModel.submitChanges({
 				success: function (oData, oResponse) {
@@ -494,9 +632,11 @@ sap.ui.define([
 			oModel10.read("/GraphSet", mParameters);
 		},
 		getDate1: function (oData, oEvent, user) {
-			var LoginTime = null,
+			oData.results.sort((a, b) => (a.Audittime > b.Audittime) ? 1 : ((b.Audittime > a.Audittime) ? -1 : 0));
+			var LoginTime = oData.results[0].Audittime.slice(2, 4).concat(oData.results[0].Audittime.slice(5, 7)),
 				a = [],
 				LogutTime = null;
+
 			for (var i = 0; i < oData.results.length; i++) {
 				if (oData.results[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
 					LoginTime = oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7));
@@ -539,87 +679,225 @@ sap.ui.define([
 			totalHour = totalHour + addhour;
 			totalMin = totalMin;
 			if (this.getView().byId("comboUser").getValue() === "Weekly") {
-				var a = {
-					"date": oEvent,
+				var oGraph = {
+					"date": new Date(oEvent).getFullYear() + "-" + Number(new Date(oEvent).getMonth() + 1) + "-" + Number(new Date(oEvent).getDate() -
+						1),
 					"count": totalHour + "." + totalMin
 				}
-			} else if (this.getView().byId("comboUser").getValue() === "Userwise") {
-				var a = {
+			} else if (this.getView().byId("comboUser").getValue() === "Userwise(daily)") {
+				var oGraph = {
 					"date": user,
 					"count": totalHour + "." + totalMin
 				}
 			}
 
-			this.week.push(a);
-			// debugger;
-
-			// var noH = 23 - totalHour,
-			// 	noM = 60 - totalMin;
-			// var graphTotal = totalHour.concat(totalMin);
-			// var workhour = (Number(totalHour.toString() + "." + totalMin.toString()) * 100) / 24;
-			// var nonWork = 100 - workhour;
-			// this.getView().getModel("donut").setProperty("/a", workhour);
-			// this.getView().getModel("donut").setProperty("/b", nonWork);
-			// this.getView().getModel("donut").setProperty("/c", totalHour.toString() + ":" + totalMin.toString());
-			// this.getView().getModel("donut").setProperty("/d", noH.toString() + ":" + noM.toString());
+			this.week.push(oGraph);
 
 		},
-		// getDate1: function (oData) {
-		// 	var LoginTime = null,
-		// 		a = [],
-		// 		LogutTime = null;
-		// 	for (var i = 0; i < oData.results.length; i++) {
-		// 		if (oData.results[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
-		// 			LoginTime = oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7));
-		// 		} else if (oData.results[i].Auditmessage.split(" ")[1] === "Logoff" && LoginTime !== null) {
-		// 			LogutTime = LoginTime.concat(oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7)));
-		// 			a.push(LogutTime);
-		// 			LoginTime = null;
+		onPressAll: function (oEvent) {
+				var oTable = this.getView().byId("idProductsTable");
+				// oValue = this.getView().getModel("userModel").getProperty("/")
 
-		// 			LogutTime = null;
-		// 		}
-		// 	}
-		// 	var totalHour = 0,
-		// 		totalMin = 0;
-		// 	for (i = 0; i < a.length; i++) {
-		// 		var sHour = Number(a[i].slice(0, 2)),
-		// 			sMin = Number(a[i].slice(2, 4)),
-		// 			eHour = Number(a[i].slice(4, 6)),
-		// 			eMin = Number(a[i].slice(6, 8));
-		// 		if (sHour === eHour) {
-		// 			var hour = 0;
-		// 			var min = eMin - sMin;
-		// 			totalHour = totalHour + hour;
-		// 			totalMin = totalMin + min;
-		// 		} else {
-		// 			var hour = eHour - 1 - sHour;
-		// 			var min = 60 - sMin + eMin;
-		// 			totalHour = totalHour + hour;
-		// 			totalMin = totalMin + min;
-		// 		}
-		// 	}
-		// 	var addhour = 0;
-		// 	for (var i = 0; i < 1000; i++) {
-		// 		if (totalMin >= 60) {
-		// 			addhour = addhour + 1;
-		// 			totalMin = totalMin - 60;
-		// 		} else {
-		// 			break;
-		// 		}
-		// 	}
-		// 	totalHour = totalHour + addhour;
-		// 	totalMin = totalMin;
-		// 	var noH = 23 - totalHour,
-		// 		noM = 60 - totalMin;
-		// 	// var graphTotal = totalHour.concat(totalMin);
-		// 	var workhour = (Number(totalHour.toString() + "." + totalMin.toString()) * 100) / 24;
-		// 	var a = {
-		// 			"date": "8-12",
-		// 			"count": totalHour.toString() + "." + totalMin.toString()
-		// 		},
-		// 		// this.week.push(arguments);
+				let binding = oTable.getBinding("rows");
+				binding.filter(null);
+			},
+			// getDate1: function (oData) {
+			// 	var LoginTime = null,
+			// 		a = [],
+			// 		LogutTime = null;
+			// 	for (var i = 0; i < oData.results.length; i++) {
+			// 		if (oData.results[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
+			// 			LoginTime = oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7));
+			// 		} else if (oData.results[i].Auditmessage.split(" ")[1] === "Logoff" && LoginTime !== null) {
+			// 			LogutTime = LoginTime.concat(oData.results[i].Audittime.slice(2, 4).concat(oData.results[i].Audittime.slice(5, 7)));
+			// 			a.push(LogutTime);
+			// 			LoginTime = null;
 
-		// }
+		Searchweek1: function () {
+			// var a = new Filter({
+			// 	path: "Auditdate",
+			// 	operator: FilterOperator.EQ,
+			// 	value1: '%' + "10/13/2020" + '%'
+			// });
+			// this.getView().getModel("myModel").setProperty("/monthly", []);
+			var b = new Filter({
+				path: "Audituser",
+				operator: FilterOperator.EQ,
+				value1: this.getView().getModel("graph").getProperty("/weeklyuser")
+			});
+
+			var f = new Array();
+			// f.push(a);
+			f.push(b);
+			var k = 21,
+				date1 = "10/13/2020",
+
+				year = Number(this.getView().getModel("graph").getProperty("/weeklyuserdate").slice(3, 7)),
+				month = Number(this.getView().getModel("graph").getProperty("/weeklyuserdate").slice(0, 2)),
+				date = 1,
+				endDate = this.getDaysInMonth(month, year);
+
+			for (var i = 0; i < endDate; i++) {
+				// if (date > 31 && month == 12) {
+				// 	year++;
+				// 	month = 1;
+				// 	date = 1;
+				// } else {
+				// 	if (date <= endDate) {
+				var a = new Filter({
+					path: "Auditdate",
+					operator: FilterOperator.EQ,
+					value1: '%' + year + "-" + month + "-" + Number(date + i) + '%'
+				});
+				f.push(a);
+				// this.GetData(year + "-" + month + "-" + Number(date), this.getView().byId("combo1").getValue());
+				// i++;
+				// date++;
+				// } else {
+				// 	month = month + 1;
+				// 	date = 1;
+				// }
+				// }
+			}
+			var mParameters = {
+				filters: f, // your Filter Array
+				success: function (oData, oResponse) {
+					if (oData.results.length !== 0) {
+						oData.results.sort((a, b) => (a.Auditdate > b.Auditdate) ? 1 : ((b.Auditdate > a.Auditdate) ? -1 : 0));
+						this.calculater(oData.results, month, year);
+						// this.getDate1(oData, oEvent, user);
+					} else {
+						this.getView().getModel("myModel").setProperty("/monthlytable", []);
+						this.getView().getModel("myModel").setProperty("/monthly", []);
+					}
+				}.bind(this),
+				error: function (oError) {
+
+				}
+			};
+
+			var oModel10 = new sap.ui.model.odata.ODataModel("/sap/opu/odata/sap/ZUSERDATA_SRV");
+			oModel10.read("/GraphSet", mParameters);
+		},
+		calculater: function (oData, month, year) {
+			var startDate = new Date(oData[0].Auditdate).getDate(),
+				endDate = this.getDaysInMonth(month, year),
+				TableUser = oData[0].Audituser;
+			var model = [];
+			// var model = this.getView().getModel("myModel").getProperty("/monthly");
+			var finalHour = 0,
+				finalmin = 0,
+				finalweek = 7,
+				displayweek = "0-7";
+			var tablehour = 0,
+				tableMin = 0;
+			while (oData[0].Auditdate <= oData[oData.length - 1].Auditdate) {
+				var adatewiseData = oData.filter(obj => {
+					return obj.Auditdate === oData[0].Auditdate;
+				});
+				adatewiseData.sort((a, b) => (a.Audittime > b.Audittime) ? 1 : ((b.Audittime > a.Audittime) ? -1 : 0));
+				var LoginTime = adatewiseData[0].Audittime.slice(2, 4).concat(adatewiseData[0].Audittime.slice(5, 7)),
+					a = [],
+					LogutTime = null;
+
+				for (var i = 0; i < adatewiseData.length; i++) {
+					if (adatewiseData[i].Auditmessage.split(" ")[0] === "Logon" && LoginTime === null) {
+						LoginTime = adatewiseData[i].Audittime.slice(2, 4).concat(adatewiseData[i].Audittime.slice(5, 7));
+					} else if (adatewiseData[i].Auditmessage.split(" ")[1] === "Logoff" && LoginTime !== null) {
+						LogutTime = LoginTime.concat(adatewiseData[i].Audittime.slice(2, 4).concat(adatewiseData[i].Audittime.slice(5, 7)));
+						a.push(LogutTime);
+						LoginTime = null;
+
+						LogutTime = null;
+					}
+				}
+				var totalHour = 0,
+					totalMin = 0;
+				for (i = 0; i < a.length; i++) {
+					var sHour = Number(a[i].slice(0, 2)),
+						sMin = Number(a[i].slice(2, 4)),
+						eHour = Number(a[i].slice(4, 6)),
+						eMin = Number(a[i].slice(6, 8));
+					if (sHour === eHour) {
+						var hour = 0;
+						var min = eMin - sMin;
+						totalHour = totalHour + hour;
+						totalMin = totalMin + min;
+					} else {
+						var hour = eHour - 1 - sHour;
+						var min = 60 - sMin + eMin;
+						totalHour = totalHour + hour;
+						totalMin = totalMin + min;
+					}
+				}
+				var addhour = 0;
+				for (var i = 0; i < 1000; i++) {
+					if (totalMin >= 60) {
+						addhour = addhour + 1;
+						totalMin = totalMin - 60;
+					} else {
+						break;
+					}
+				}
+				totalHour = totalHour + addhour;
+				totalMin = totalMin;
+				var addhour1 = 0;
+				tablehour = tablehour + totalHour;
+				tableMin = tableMin + totalMin;
+				finalmin = finalmin + totalMin;
+				finalHour = finalHour + totalHour;
+				for (var i = 0; i < 1000; i++) {
+					if (finalmin >= 60) {
+						addhour1 = addhour1 + 1;
+						finalmin = finalmin - 60;
+					} else {
+						break;
+					}
+				}
+				finalHour = finalHour + addhour1;
+				if (new Date(adatewiseData[0].Auditdate).getDate() === finalweek) {
+					var obj = {
+						date: displayweek,
+						count: finalHour + "." + finalmin
+					}
+					model.push(obj);
+					displayweek = finalweek + "-" + Number(finalweek + 7);
+					finalweek = finalweek + 7;
+					finalmin = 0;
+					finalHour = 0;
+				}
+				oData.splice(0, adatewiseData.length);
+				if (oData.length === 0) {
+					break;
+				}
+			}
+			// var tablehour=0,tableMin=0;
+			var addhour2 = 0;
+			this.getView().getModel("myModel").setProperty("/monthly", model);
+			for (var i = 0; i < 1000; i++) {
+				if (tableMin >= 60) {
+					addhour2 = addhour2 + 1;
+					tableMin = tableMin - 60;
+				} else {
+					break;
+				}
+			}
+			tablehour = tablehour + addhour2;
+			var object = [{
+				"user": TableUser,
+				"work": tablehour + "." + tableMin,
+				"total": 56.00,
+				"month": month + "/" + year
+			}]
+			this.getView().getModel("myModel").setProperty("/monthlytable", object);
+		},
+		getDaysInMonth: function (month, year) {
+			// Here January is 1 based
+			//Day 0 is the last day in the previous month
+			return new Date(year, month, 0).getDate();
+			// Here January is 0 based
+			// return new Date(year, month+1, 0).getDate();
+		},
 
 	});
 });
